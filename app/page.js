@@ -1,8 +1,10 @@
-import Image from 'next/image'
-import styles from './page.module.css'
-
+import { chatBot } from './chat';
 export default function Home() {
   return (
-    <p>Test</p>
-  )
+    <div>
+      <main>
+        <chatBot />
+      </main>
+    </div>
+  );
 }
