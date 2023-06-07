@@ -1,38 +1,37 @@
-"use client";
 import { useState } from "react";
 
-const chatBot = () => {
-  const [Umsg, setUmsg] = useState("");
-  const [Convo, setConvo] = useState([]);
+const Chatbot = () => {
+  const [umsg, setUmsg] = useState("");
+  const [convo, setConvo] = useState([]);
 
-  const prompt = (txt) => {
-    txt.preventDefault();
+  const Prompt = (e) => {
+    e.preventDefault();
 
-    setConvo([...Convo, { msg: Umsg, sender: "User" }]);
+    setConvo([...convo, { msg: umsg, sender: "User" }]);
+    setConvo([...convo, { msg: "Connect API", sender: "GPT" }]);
     setUmsg("");
-
-    setConvo([...Convo, { msg: "Connect API", sender: "GPT" }]);
+    console.log(convo);
   };
 
   return (
     <div className="Chat">
       <h1>Title</h1>
       <div>
-        {Convo.map((conv) => (
-          <li className={conv.sender}>
+        {convo.map((conv, index) => (
+          <li key={index} className={conv.sender}>
             {conv.msg}
           </li>
         ))}
       </div>
-      <form onSubmit={prompt}>
+      <form onSubmit={Prompt}>
         <input
           type="text"
-          value={Umsg}
-          onChange={(txt) => setUmsg(txt.target.value)}
+          value={umsg}
+          onChange={(e) => setUmsg(e.target.value)}
         />
         <button type="submit">Send</button>
       </form>
     </div>
   );
 };
-export default chatBot;
+export default Chatbot;

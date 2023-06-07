@@ -1,10 +1,9 @@
-import { chatBot } from './chat';
+"use client";
+import Chatbot from './chat';
 export default function Home() {
   return (
-    <div>
-      <main>
-        <chatBot />
-      </main>
-    </div>
+    <main>
+      <Chatbot />
+    </main>
   );
 }
