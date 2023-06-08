@@ -1,23 +1,22 @@
 import { useState } from "react";
 
 const Chatbot = () => {
-  const [umsg, setUmsg] = useState("");
-  const [convo, setConvo] = useState([]);
+  const [Umsg, setUmsg] = useState("");
+  const [Convo, setConvo] = useState([]);
 
   const Prompt = (e) => {
     e.preventDefault();
 
-    setConvo([...convo, { msg: umsg, sender: "User" }]);
-    setConvo([...convo, { msg: "Connect API", sender: "GPT" }]);
+    setConvo([...Convo, { msg: Umsg, sender: "User" }]);
+    setConvo(prevConvo => [...prevConvo, { msg: "Connect API", sender: "GPT" }]);
     setUmsg("");
-    console.log(convo);
   };
 
   return (
     <div className="Chat">
       <h1>Title</h1>
       <div>
-        {convo.map((conv, index) => (
+        {Convo.map((conv, index) => (
           <li key={index} className={conv.sender}>
             {conv.msg}
           </li>
@@ -26,8 +25,8 @@ const Chatbot = () => {
       <form onSubmit={Prompt}>
         <input
           type="text"
-          value={umsg}
-          onChange={(e) => setUmsg(e.target.value)}
+          onChange={(ev) => setUmsg(ev.target.value)}
+          value={Umsg}
         />
         <button type="submit">Send</button>
       </form>
