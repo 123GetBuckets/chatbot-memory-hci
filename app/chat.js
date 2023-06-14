@@ -1,17 +1,11 @@
 'use client';
 
-import './style/chat.css'
+import 'styles/chat.css'
 import { useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { Configuration, OpenAIApi } from "openai";
 
 const apiKey = process.env.NEXT_PUBLIC_OPENAI_API_KEY;
-
-const configuration = new Configuration({
-    apiKey: apiKey,
-});
-
-const openai = new OpenAIApi(configuration);
 
 async function runLLM(messages) {
   const res = await fetch(`/api/openai`, {
@@ -31,16 +25,12 @@ export default function Chat() {
   };
 
   const handleSend = async () => {
-    const newMessage = { id: uuidv4(), role: "user", content: message };
+    const newMessage = { role: "user", content: message };
     setMessages(prevMessages => [...prevMessages, newMessage]);
     
     const messageList = [...messages, newMessage];
 
-    const completion = await runLLM(messageList)
-
-    console.log(completion)
-    
-    const response = completion.data.choices[0].message;
+    const response = await runLLM(messageList)
 
     setMessages(prevMessages => [...prevMessages, {id: uuidv4(), role: "assistant", content: response.content}]);
 
