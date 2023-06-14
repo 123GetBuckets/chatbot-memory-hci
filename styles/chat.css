@@ -1,35 +1,84 @@
 .chat-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100vh; /* Adjust this as needed */
-  }
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+  height: 100vh; /* Adjust this as needed */
+}
   
 .input-container {
-display: flex;
-gap: 10px; /* Provides space between the elements */
-margin-bottom: 20px; /* Provides space between this container and the list of messages */
+  display: flex;
+  gap: 10px; /* Provides space between the elements */
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .input-container input {
-flex-grow: 1; /* Allows the input to take up remaining space */
+  flex-grow: 1; /* Allows the input to take up remaining space */
 }
 
 .message-list {
-list-style: none; /* Remove dots */
-padding: 0; /* Remove padding */
-width: fit-content; /* Shrink wrap content */
+  list-style: none; /* Remove dots */
+  padding: 0; /* Remove padding */
+  width: fit-content; /* Shrink wrap content */
+  text-align: center;
 }
 
 .message-list li {
-margin-bottom: 10px; /* Provide space between messages */
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  margin-bottom: 10px; /* Provide space between messages */
+}
+
+.message-role {
+  margin-right: 20px; /* Provide space between role and content */
+  width: 100px; /* Set this to a suitable value for your needs */
+  text-align: left; /* Aligns text to the right */
 }
 
 .role {
-font-weight: 500; /* Make text bolder */
-background-color: rgb(81, 81, 255); /* Add blue background */
-color: white; /* Make text white */
-padding: 1px 3px; /* Add some padding around the text */
-border-radius: 5px; /* Add rounded corners */
+  font-weight: 600; /* Make text bolder */
+}
+
+.message-wrapper {
+  display: flex;
+  align-items: left;
+  transition: transform 0.2s; /* Added transition */
+}
+
+.message-content {
+  justify-content: space-between;
+  text-align: left; /* Aligns text to the right */
+  width: 300px; /* Set this to a suitable value for your needs */
+}
+
+.action-wrapper {
+  min-width: 30px; /* Set this to a suitable value for your needs */
+  text-align: right; /* Aligns button to the right */
+}
+
+.message-actions {
+  opacity: 0;
+  transition: opacity 0.2s ease-in-out;
+  background: none; /* Removes the default button background */
+  border: none; /* Removes the default button border */
+  cursor: pointer; /* Changes the cursor to a hand when hovering over the button */
+  color: darkgray; /* Changes the color of the button */
+  font-size: 18px; /* Changes the size of the button */
+  padding: 0; /* Removes the default button padding */
+  height: 0px;
+  margin-left: 0px; /* Adds a bit of space between the message and the button */
+}
+
+li:hover .message-actions {
+  opacity: 1; /* Show the button on hover */
+}
+
+.message-wrapper:hover {
+  transform: scale(1.025); /* Added hover effect */
+}
+
+.message-actions:hover {
+  color: gray;
 }

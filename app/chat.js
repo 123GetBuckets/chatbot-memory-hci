@@ -3,7 +3,6 @@
 import 'styles/chat.css'
 import { useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
-import { Configuration, OpenAIApi } from "openai";
 
 const apiKey = process.env.NEXT_PUBLIC_OPENAI_API_KEY;
 
@@ -20,11 +19,23 @@ export default function Chat() {
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([]);
 
+  const [hoveredMessageId, setHoveredMessageId] = useState(null);
+
+  const handleMouseEnter = (id) => {
+    setHoveredMessageId(id);
+  };
+  
+  const handleMouseLeave = () => {
+    setHoveredMessageId(null);
+  };
+
   const handleInputChange = (e) => {
     setMessage(e.target.value);
   };
 
   const handleSend = async () => {
+
+    setMessage("");
 
     setMessages(prevMessages => [...prevMessages, { id: uuidv4(), role: "user", content: message }])
 
@@ -39,7 +50,6 @@ export default function Chat() {
 
     setMessages(prevMessages => [...prevMessages, {id: uuidv4(), role: "assistant", content: response}]);
 
-    setMessage("");
   };
 
   const handleNewChat = () => {
@@ -50,8 +60,22 @@ export default function Chat() {
     <div className="chat-container">
       <ul className="message-list">
         {messages.map(msg => 
-            <li key={msg.id}>
-                <span className="role">{msg.role}</span> {msg.content}
+            <li key={msg.id} onMouseEnter={() => handleMouseEnter(msg.id)} onMouseLeave={handleMouseLeave}>
+              <div className='message-wrapper'>
+                <div className="message-role">
+                  <span className="role">{msg.role}</span>
+                </div>
+                <div className="message-content">
+                  {msg.content.toLowerCase()}
+                </div>
+                <div className="action-wrapper">
+                  {hoveredMessageId === msg.id && (
+                    <button className="message-actions" onClick={(e) => handleDropdownToggle(e, msg.id)}>
+                      •••
+                    </button>
+                  )}
+                </div>
+              </div>
             </li>
         )}
       </ul>
