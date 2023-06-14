@@ -1,9 +1,12 @@
-"use client";
-import Chatbot from './chat';
-export default function Home() {
+import React from 'react';
+import Chat from './chat';
+
+function Page() {
   return (
-    <main>
-      <Chatbot />
-    </main>
+    <div>
+      <Chat />
+    </div>
   );
 }
+
+export default Page;
