@@ -1,17 +1,11 @@
 'use client';
 
-import './style/chat.css'
+import 'styles/chat.css'
 import { useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { Configuration, OpenAIApi } from "openai";
 
 const apiKey = process.env.NEXT_PUBLIC_OPENAI_API_KEY;
-
-const configuration = new Configuration({
-    apiKey: apiKey,
-});
-
-const openai = new OpenAIApi(configuration);
 
 async function runLLM(messages) {
   const res = await fetch(`/api/openai`, {
