@@ -5,13 +5,22 @@ import { useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { Configuration, OpenAIApi } from "openai";
 
-const orgKey = process.env.OPENAI_ORG_KEY;
-const apiKey = process.env.OPENAI_API_KEY;
+const apiKey = process.env.NEXT_PUBLIC_OPENAI_API_KEY;
 
 const configuration = new Configuration({
-    apiKey: "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",
+    apiKey: apiKey,
 });
+
 const openai = new OpenAIApi(configuration);
+
+async function runLLM(messages) {
+  const res = await fetch(`/api/openai`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ query: messages }),
+  }).then(response => response.json());
+  return res;
+}
 
 export default function Chat() {
   const [message, setMessage] = useState("");
@@ -27,10 +36,7 @@ export default function Chat() {
     
     const messageList = [...messages, newMessage];
 
-    const completion = await openai.createChatCompletion({
-      model: "gpt-3.5-turbo",
-      messages: messageList,
-    });
+    const completion = await runLLM(messageList)
 
     console.log(completion)
     
