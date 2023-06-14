@@ -21,5 +21,9 @@ export default async (req, res) => {
 
     const response = completion.data.choices[0].message;
 
-    res.status(200).json({text: `${response}`})
+    console.log('__________________________________-')
+    console.log(response)
+    console.log('__________________________________-')
+
+    res.status(200).json({content: `${response.content}`})
 }

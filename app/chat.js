@@ -25,10 +25,13 @@ export default function Chat() {
   };
 
   const handleSend = async () => {
-    const newMessage = { role: "user", content: message };
-    setMessages(prevMessages => [...prevMessages, newMessage]);
     
-    const messageList = [...messages, newMessage];
+    setMessages(prevMessages => [...prevMessages, {id: uuidv4(), role: "user", content: message }]);
+    
+    const messageList = messages.map(message => ({
+      role: message.role,
+      content: message.content
+    }));
 
     const response = await runLLM(messageList)
 
