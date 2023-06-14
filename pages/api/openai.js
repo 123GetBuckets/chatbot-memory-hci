@@ -14,12 +14,12 @@ export default async (req, res) => {
     console.log(req.body.query)
     console.log('__________________________________-')
 
-    const response = await openai.createChatCompletion({
+    const completion = await openai.createChatCompletion({
         model: "gpt-3.5-turbo",
         messages: req.body.query,
     });
 
-    console.log(response.data.choices[0].text)
+    const response = completion.data.choices[0].message;
 
-    res.status(200).json({text: `${response.data.choices[0].text.trim()}`})
+    res.status(200).json({text: `${response}`})
 }

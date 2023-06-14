@@ -25,16 +25,12 @@ export default function Chat() {
   };
 
   const handleSend = async () => {
-    const newMessage = { id: uuidv4(), role: "user", content: message };
+    const newMessage = { role: "user", content: message };
     setMessages(prevMessages => [...prevMessages, newMessage]);
     
     const messageList = [...messages, newMessage];
 
-    const completion = await runLLM(messageList)
-
-    console.log(completion)
-    
-    const response = completion.data.choices[0].message;
+    const response = await runLLM(messageList)
 
     setMessages(prevMessages => [...prevMessages, {id: uuidv4(), role: "assistant", content: response.content}]);
 
