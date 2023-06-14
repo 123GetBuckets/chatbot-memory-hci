@@ -1,8 +1,17 @@
 'use client';
 
-import './chat.css'
+import './style/chat.css'
 import { useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
+import { Configuration, OpenAIApi } from "openai";
+
+const orgKey = process.env.OPENAI_ORG_KEY;
+const apiKey = process.env.OPENAI_API_KEY;
+
+const configuration = new Configuration({
+    apiKey: "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",
+});
+const openai = new OpenAIApi(configuration);
 
 export default function Chat() {
   const [message, setMessage] = useState("");
@@ -12,8 +21,23 @@ export default function Chat() {
     setMessage(e.target.value);
   };
 
-  const handleSend = () => {
-    setMessages(prevMessages => [...prevMessages, {id: uuidv4(), role: "user", text: message}]);
+  const handleSend = async () => {
+    const newMessage = { id: uuidv4(), role: "user", content: message };
+    setMessages(prevMessages => [...prevMessages, newMessage]);
+    
+    const messageList = [...messages, newMessage];
+
+    const completion = await openai.createChatCompletion({
+      model: "gpt-3.5-turbo",
+      messages: messageList,
+    });
+
+    console.log(completion)
+    
+    const response = completion.data.choices[0].message;
+
+    setMessages(prevMessages => [...prevMessages, {id: uuidv4(), role: "assistant", content: response.content}]);
+
     setMessage("");
   };
 
@@ -26,7 +50,7 @@ export default function Chat() {
       <ul className="message-list">
         {messages.map(msg => 
             <li key={msg.id}>
-                <span className="role">{msg.role}</span> {msg.text}
+                <span className="role">{msg.role}</span> {msg.content}
             </li>
         )}
       </ul>
