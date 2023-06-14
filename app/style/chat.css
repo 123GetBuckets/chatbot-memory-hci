@@ -27,7 +27,7 @@ margin-bottom: 10px; /* Provide space between messages */
 }
 
 .role {
-font-weight: bold; /* Make text bolder */
+font-weight: 500; /* Make text bolder */
 background-color: rgb(81, 81, 255); /* Add blue background */
 color: white; /* Make text white */
 padding: 1px 3px; /* Add some padding around the text */
