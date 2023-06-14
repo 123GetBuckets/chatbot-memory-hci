@@ -19,11 +19,11 @@ export default async (req, res) => {
         messages: req.body.query,
     });
 
-    const response = completion.data.choices[0].message;
+    const response = completion.data.choices[0].message.content;
 
     console.log('__________________________________-')
     console.log(response)
     console.log('__________________________________-')
 
-    res.status(200).json({content: `${response.content}`})
+    res.status(200).json(`${response}`)
 }
