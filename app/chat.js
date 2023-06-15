@@ -33,6 +33,7 @@ export default function Chat() {
   }, [])
 
   const DropdownMenu = ({ messageId, onClose }) => {
+
     const deleteMessage = () => {
       onClose();
     }
@@ -56,10 +57,10 @@ export default function Chat() {
     return (
       <div className="dropdown-menu">
         <button onClick={deleteMessage}>delete</button>
-        <button onClick={deleteMessage}>visibility</button>
-        <button onClick={deleteMessage}>duplicate</button>
-        <button onClick={deleteMessage}>copy</button>
-        <button onClick={deleteMessage}>edit</button>
+        <button onClick={duplicateMessage}>visibility</button>
+        <button onClick={copyText}>duplicate</button>
+        <button onClick={editMessage}>copy</button>
+        <button onClick={editVisibility}>edit</button>
       </div>
     )
   }
