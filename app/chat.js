@@ -1,7 +1,7 @@
 'use client';
 
 import 'styles/chat.css'
-import { GoGrabber, GoKebabHorizontal, GoPerson, GoPlus, GoTriangleRight, GoCopy, GoEye} from "react-icons/go";
+import { GoGrabber, GoKebabHorizontal, GoPerson, GoPlus, GoTriangleRight, GoCopy, GoEye } from "react-icons/go";
 import { DotFillIcon } from '@primer/octicons-react';
 import { useState, useEffect, useRef } from 'react';
 import { v4 as uuidv4 } from 'uuid';
