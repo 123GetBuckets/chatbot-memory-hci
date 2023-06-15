@@ -9,6 +9,7 @@ import { v4 as uuidv4 } from 'uuid';
 const apiKey = process.env.NEXT_PUBLIC_OPENAI_API_KEY;
 
 async function runLLM(messages) {
+
   const res = await fetch(`/api/openai`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -20,7 +21,7 @@ async function runLLM(messages) {
 export default function Chat() {
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([]);
-  const [editMode, setEditMode] = useState(false)
+  const [editMessageId, setEditMessageId] = useState(null);
   const [edit, setEdit] = useState("")
   const [hoveredMessageId, setHoveredMessageId] = useState(null);
 
@@ -46,12 +47,27 @@ export default function Chat() {
     const newMessages = [...messages];
     newMessages[int].content = edit;
     setMessages(newMessages);
-  }
+    setEditMessageId(null);
+  };
 
   const handleSend = async () => {
 
     // Return early if the message is empty
     if (message.trim() === "") {
+
+      if (messages.length === 0) {
+        return;
+      }
+
+      const messageList = messages.map(message => ({
+        role: message.role,
+        content: message.content
+      }));
+
+      const response = await runLLM(messageList);
+
+      setMessages(prevMessages => [...prevMessages, { id: uuidv4(), role: "assistant", content: response }]);
+
       return;
     }
 
@@ -86,22 +102,27 @@ export default function Chat() {
                   <span className="role">{msg.role}</span>
                 </div>
                 <div className="message-content">
-                  {editMode ? (
+                  {editMessageId === msg.id ? (
                     <div>
                       <input
+                        className='edit-box'
                         type='text'
-                        value={message} onChange={e => setMessage(e.target.value)}
+                        value={edit} onChange={e => setEdit(e.target.value)}
                         onKeyDown={(e) => {
                           if (e.key === "Enter") {
-                            setEditMode(false)
-                            handleEdit(index, message)
-                            setMessage('')
+                            handleEdit(index, edit)
+                            setEdit('')
                           }
                         }}
                       />
                     </div>
                   ) : (
-                    <div onDoubleClick={() => setEditMode(true)}>
+                    <div onDoubleClick={() => {
+                      setEdit(
+                        msg.content.toLowerCase()
+                      )
+                      setEditMessageId(msg.id)
+                    }}>
                       {msg.content.toLowerCase().split('\n').map((item, key) => {
                         return <span key={key}>{item}<br/></span>
                       })}
