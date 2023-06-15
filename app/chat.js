@@ -1,7 +1,7 @@
 'use client';
 
 import 'styles/chat.css'
-import { GoGrabber, GoKebabHorizontal, GoPerson, GoPlus, GoTriangleRight, GoCopy, GoEye} from "react-icons/go";
+import { GoGrabber, GoKebabHorizontal, GoPerson, GoPlus, GoTriangleRight, GoCopy, GoEye } from "react-icons/go";
 import { DotFillIcon } from '@primer/octicons-react';
 import { useState, useEffect, useRef } from 'react';
 import { v4 as uuidv4 } from 'uuid';
@@ -104,49 +104,49 @@ export default function Chat() {
   return (
     <div className="chat-container">
       <ul className="message-list">
-        {messages.map((msg, index) => 
-            <li key={msg.id} onMouseEnter={() => handleMouseEnter(msg.id)} onMouseLeave={handleMouseLeave}>
-              <div className='message-wrapper'>
-                <div className="message-role">
-                  <span className="role">{msg.role}</span>
-                </div>
-                <div className="message-content">
-                  {editMessageId === msg.id ? (
-                    <div>
-                      <textarea
-                        ref={textAreaRef}
-                        className='edit-box'
-                        type='text'
-                        value={edit}
-                        onChange={e => {handleEditChange(e)}}
-                        onKeyDown={e => {
-                          if (e.key === 'Enter' && !e.shiftKey) {
-                            e.preventDefault();
-                            handleEdit(index, edit)
-                          }
-                        }}
-                      />
-                    </div>
-                  ) : (
-                    <div onClick={e => {
-                      setEdit(msg.content.toLowerCase())
-                      setEditMessageId(msg.id)
-                    }} >
-                      {msg.content.toLowerCase().split('\n').map((item, key) => {
-                        return <span className='message-text' key={key}>{item}<br/></span>
-                      })}
-                    </div>
-                  )}
-                </div>
-                <div className="action-wrapper">
-                  {hoveredMessageId === msg.id && (
-                    <button className="message-actions" onClick={(e) => handleDropdownToggle(e, msg.id)}>
-                      <GoKebabHorizontal />
-                    </button>
-                  )}
-                </div>
+        {messages.map((msg, index) =>
+          <li key={msg.id} onMouseEnter={() => handleMouseEnter(msg.id)} onMouseLeave={handleMouseLeave}>
+            <div className='message-wrapper'>
+              <div className="message-role">
+                <span className="role">{msg.role}</span>
               </div>
-            </li>
+              <div className="message-content">
+                {editMessageId === msg.id ? (
+                  <div>
+                    <textarea
+                      ref={textAreaRef}
+                      className='edit-box'
+                      type='text'
+                      value={edit}
+                      onChange={e => { handleEditChange(e) }}
+                      onKeyDown={e => {
+                        if (e.key === 'Enter' && !e.shiftKey) {
+                          e.preventDefault();
+                          handleEdit(index, edit)
+                        }
+                      }}
+                    />
+                  </div>
+                ) : (
+                  <div onClick={e => {
+                    setEdit(msg.content.toLowerCase())
+                    setEditMessageId(msg.id)
+                  }} >
+                    {msg.content.toLowerCase().split('\n').map((item, key) => {
+                      return <span className='message-text' key={key}>{item}<br /></span>
+                    })}
+                  </div>
+                )}
+              </div>
+              <div className="action-wrapper">
+                {hoveredMessageId === msg.id && (
+                  <button className="message-actions" onClick={(e) => handleDropdownToggle(e, msg.id)}>
+                    <GoKebabHorizontal />
+                  </button>
+                )}
+              </div>
+            </div>
+          </li>
         )}
       </ul>
       <div className="input-container">
