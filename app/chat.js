@@ -24,7 +24,7 @@ export default function Chat() {
   const [editMessageId, setEditMessageId] = useState(null);
   const [edit, setEdit] = useState("")
   const [hoveredMessageId, setHoveredMessageId] = useState(null);
-  const [dropdownMessageId, setDropdownMessageId] = useState(null)
+  const [dropdownMessageId, setDropdownMessageId] = useState(null);
 
   const textAreaRef = useRef(null);
 
@@ -57,11 +57,11 @@ export default function Chat() {
 
     return (
       <div className="dropdown-menu">
-        <button onClick={deleteMessage}>Delete</button>
-        <button onClick={duplicateMessage}>Duplicate</button>
-        <button onClick={copyText}>Copy</button>
-        <button onClick={editMessage}>Edit</button>
-        <button onClick={editVisibility}>Visibility</button>
+        <button onClick={deleteMessage}>delete</button>
+        <button onClick={duplicateMessage}>duplicate</button>
+        <button onClick={copyText}>copy</button>
+        <button onClick={editMessage}>edit</button>
+        <button onClick={editVisibility}>visibility</button>
       </div>
     )
   }
@@ -186,7 +186,7 @@ export default function Chat() {
                     <GoKebabHorizontal />
                   </button>
                 )}
-                {dropdownMessageId === msg.id && <DropdownMenu message={msg} onClose={() => setDropdownMessageId(null)} />}
+                {dropdownMessageId === msg.id && <DropdownMenu className='dropdown-menu' message={msg} onClose={() => setDropdownMessageId(null)} />}
               </div>
             </div>
           </li>
