@@ -1,7 +1,9 @@
 'use client';
 
 import 'styles/chat.css'
-import { useState } from 'react';
+import { GoGrabber, GoKebabHorizontal, GoPerson, GoPlus, GoTriangleRight, GoCopy, GoEye} from "react-icons/go";
+import { DotFillIcon } from '@primer/octicons-react';
+import { useState, useEffect, useRef } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 
 const apiKey = process.env.NEXT_PUBLIC_OPENAI_API_KEY;
@@ -18,8 +20,13 @@ async function runLLM(messages) {
 export default function Chat() {
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([]);
-
   const [hoveredMessageId, setHoveredMessageId] = useState(null);
+
+  const textAreaRef = useRef(null);
+
+  useEffect(() => {
+    textAreaRef.current.style.height = '20px'; // Replace with your desired initial height
+  }, [])
 
   const handleMouseEnter = (id) => {
     setHoveredMessageId(id);
@@ -34,6 +41,11 @@ export default function Chat() {
   };
 
   const handleSend = async () => {
+
+    // Return early if the message is empty
+    if (message.trim() === "") {
+      return;
+    }
 
     setMessage("");
 
@@ -63,15 +75,19 @@ export default function Chat() {
             <li key={msg.id} onMouseEnter={() => handleMouseEnter(msg.id)} onMouseLeave={handleMouseLeave}>
               <div className='message-wrapper'>
                 <div className="message-role">
-                  <span className="role">{msg.role}</span>
+                  <span className="role">
+                    <span className="role-icon">{msg.role === 'assistant' ? null : null}</span> {msg.role}
+                  </span>
                 </div>
                 <div className="message-content">
-                  {msg.content.toLowerCase()}
+                  {msg.content.toLowerCase().split('\n').map((item, key) => {
+                      return <span key={key}>{item}<br/></span>
+                  })}
                 </div>
                 <div className="action-wrapper">
                   {hoveredMessageId === msg.id && (
                     <button className="message-actions" onClick={(e) => handleDropdownToggle(e, msg.id)}>
-                      •••
+                      <GoKebabHorizontal />
                     </button>
                   )}
                 </div>
@@ -80,9 +96,21 @@ export default function Chat() {
         )}
       </ul>
       <div className="input-container">
-        <button onClick={handleNewChat}>+</button>
-        <input type="text" value={message} onChange={handleInputChange} />
-        <button onClick={handleSend}>&gt;</button>
+        <button onClick={handleNewChat} className='input-button'><GoPlus /></button>
+        <textarea
+          ref={textAreaRef}
+          type="text"
+          className='input-box'
+          value={message}
+          onChange={handleInputChange}
+          onKeyDown={e => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+              e.preventDefault();
+              handleSend();
+            }
+          }}
+        />
+        <button onClick={handleSend} className='input-button'><GoTriangleRight /></button>
       </div>
     </div>
   );
