@@ -24,12 +24,45 @@ export default function Chat() {
   const [editMessageId, setEditMessageId] = useState(null);
   const [edit, setEdit] = useState("")
   const [hoveredMessageId, setHoveredMessageId] = useState(null);
+  const [dropdownMessageId, setDropdownMessageId] = useState(null)
 
   const textAreaRef = useRef(null);
 
   useEffect(() => {
     textAreaRef.current.style.height = '20px'; // Replace with your desired initial height
   }, [])
+
+  const DropdownMenu = ({ messageId, onClose }) => {
+    const deleteMessage = () => {
+      onClose();
+    }
+
+    const duplicateMessage = () => {
+      onClose();
+    }
+
+    const copyText = () => {
+      onClose();
+    }
+
+    const editMessage = () => {
+      onClose();
+    }
+
+    const editVisibility = () => {
+      onClose();
+    }
+
+    return (
+      <div className="dropdown-menu">
+        <button onClick={deleteMessage}>delete</button>
+        <button onClick={deleteMessage}>visibility</button>
+        <button onClick={deleteMessage}>duplicate</button>
+        <button onClick={deleteMessage}>copy</button>
+        <button onClick={deleteMessage}>edit</button>
+      </div>
+    )
+  }
 
   const handleMouseEnter = (id) => {
     setHoveredMessageId(id);
@@ -51,13 +84,17 @@ export default function Chat() {
     e.target.style.height = `${e.target.scrollHeight - 10}px`;
   }
 
-  const handleEdit = (int, edit) => {
+  const handleEdit = (id, edit) => {
     const newMessages = [...messages];
-    newMessages[int].content = edit;
+    newMessages[id].content = edit;
     setMessages(newMessages);
     setEditMessageId(null);
     setEdit('')
   };
+
+  const handleDropdownToggle = (id) => {
+    setDropdownMessageId(id)
+  }
 
   const handleNewChat = () => {
     setMessages([]);
@@ -128,22 +165,26 @@ export default function Chat() {
                       />
                     </div>
                   ) : (
-                    <div onClick={e => {
+                    <div className='message-text' onClick={e => {
+                      handleEditChange
                       setEdit(msg.content.toLowerCase())
                       setEditMessageId(msg.id)
-                    }} >
+                    }}>
                       {msg.content.toLowerCase().split('\n').map((item, key) => {
-                        return <span className='message-text' key={key}>{item}<br/></span>
+                        return <span key={key}>{item}<br/></span>
                       })}
                     </div>
                   )}
                 </div>
                 <div className="action-wrapper">
                   {hoveredMessageId === msg.id && (
-                    <button className="message-actions" onClick={(e) => handleDropdownToggle(e, msg.id)}>
+                    <button className="message-actions" onClick={(e) => {
+                      handleDropdownToggle(msg.id)
+                      }}>
                       <GoKebabHorizontal />
                     </button>
                   )}
+                  {dropdownMessageId === msg.id && <DropdownMenu messageId={msg.id} onClose={() => setDropdownMessageId(null)} />}
                 </div>
               </div>
             </li>
