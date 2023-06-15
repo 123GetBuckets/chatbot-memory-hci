@@ -10,13 +10,3 @@
 # conceptual
 ### layout
 <img src=https://github.com/HMISTER03/chatbot-memory-hci/assets/44552816/c21d922c-64f1-480a-a334-c6184924a1d9 width=300>
-
-
-- unordered list of message types
-- input text box
-- submit input button
-- reset conversation button
-### message types
-- AI Message
-- Human Message
-- System Message
