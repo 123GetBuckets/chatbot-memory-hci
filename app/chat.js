@@ -41,13 +41,26 @@ export default function Chat() {
 
   const handleInputChange = (e) => {
     setMessage(e.target.value);
+    e.target.style.height = '20px';
+    e.target.style.height = `${e.target.scrollHeight - 10}px`;
   };
+
+  const handleEditChange = (e) => {
+    setEdit(e.target.value)
+    e.target.style.height = '20px';
+    e.target.style.height = `${e.target.scrollHeight - 10}px`;
+  }
 
   const handleEdit = (int, edit) => {
     const newMessages = [...messages];
     newMessages[int].content = edit;
     setMessages(newMessages);
     setEditMessageId(null);
+    setEdit('')
+  };
+
+  const handleNewChat = () => {
+    setMessages([]);
   };
 
   const handleSend = async () => {
@@ -88,10 +101,6 @@ export default function Chat() {
 
   };
 
-  const handleNewChat = () => {
-    setMessages([]);
-  };
-
   return (
     <div className="chat-container">
       <ul className="message-list">
@@ -104,27 +113,27 @@ export default function Chat() {
                 <div className="message-content">
                   {editMessageId === msg.id ? (
                     <div>
-                      <input
+                      <textarea
+                        ref={textAreaRef}
                         className='edit-box'
                         type='text'
-                        value={edit} onChange={e => setEdit(e.target.value)}
-                        onKeyDown={(e) => {
-                          if (e.key === "Enter") {
+                        value={edit}
+                        onChange={e => {handleEditChange(e)}}
+                        onKeyDown={e => {
+                          if (e.key === 'Enter' && !e.shiftKey) {
+                            e.preventDefault();
                             handleEdit(index, edit)
-                            setEdit('')
                           }
                         }}
                       />
                     </div>
                   ) : (
-                    <div onDoubleClick={() => {
-                      setEdit(
-                        msg.content.toLowerCase()
-                      )
+                    <div onClick={e => {
+                      setEdit(msg.content.toLowerCase())
                       setEditMessageId(msg.id)
-                    }}>
+                    }} >
                       {msg.content.toLowerCase().split('\n').map((item, key) => {
-                        return <span key={key}>{item}<br/></span>
+                        return <span className='message-text' key={key}>{item}<br/></span>
                       })}
                     </div>
                   )}
