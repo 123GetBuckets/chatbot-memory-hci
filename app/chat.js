@@ -32,7 +32,7 @@ export default function Chat() {
     textAreaRef.current.style.height = '20px'; // Replace with your desired initial height
   }, [])
 
-  const DropdownMenu = ({ messageId, onClose }) => {
+  const DropdownMenu = ({ message, onClose }) => {
 
     const deleteMessage = () => {
       onClose();
@@ -43,6 +43,7 @@ export default function Chat() {
     }
 
     const copyText = () => {
+      navigator.clipboard.writeText(message.content)
       onClose();
     }
 
@@ -56,11 +57,11 @@ export default function Chat() {
 
     return (
       <div className="dropdown-menu">
-        <button onClick={deleteMessage}>delete</button>
-        <button onClick={duplicateMessage}>visibility</button>
-        <button onClick={copyText}>duplicate</button>
-        <button onClick={editMessage}>copy</button>
-        <button onClick={editVisibility}>edit</button>
+        <button onClick={deleteMessage}>Delete</button>
+        <button onClick={duplicateMessage}>Duplicate</button>
+        <button onClick={copyText}>Copy</button>
+        <button onClick={editMessage}>Edit</button>
+        <button onClick={editVisibility}>Visibility</button>
       </div>
     )
   }
@@ -142,53 +143,53 @@ export default function Chat() {
   return (
     <div className="chat-container">
       <ul className="message-list">
-        {messages.map((msg, index) => 
-            <li key={msg.id} onMouseEnter={() => handleMouseEnter(msg.id)} onMouseLeave={handleMouseLeave}>
-              <div className='message-wrapper'>
-                <div className="message-role">
-                  <span className="role">{msg.role}</span>
-                </div>
-                <div className="message-content">
-                  {editMessageId === msg.id ? (
-                    <div>
-                      <textarea
-                        ref={textAreaRef}
-                        className='edit-box'
-                        type='text'
-                        value={edit}
-                        onChange={e => {handleEditChange(e)}}
-                        onKeyDown={e => {
-                          if (e.key === 'Enter' && !e.shiftKey) {
-                            e.preventDefault();
-                            handleEdit(index, edit)
-                          }
-                        }}
-                      />
-                    </div>
-                  ) : (
-                    <div className='message-text' onClick={e => {
-                      handleEditChange
-                      setEdit(msg.content.toLowerCase())
-                      setEditMessageId(msg.id)
-                    }}>
-                      {msg.content.toLowerCase().split('\n').map((item, key) => {
-                        return <span key={key}>{item}<br/></span>
-                      })}
-                    </div>
-                  )}
-                </div>
-                <div className="action-wrapper">
-                  {hoveredMessageId === msg.id && (
-                    <button className="message-actions" onClick={(e) => {
-                      handleDropdownToggle(msg.id)
-                      }}>
-                      <GoKebabHorizontal />
-                    </button>
-                  )}
-                  {dropdownMessageId === msg.id && <DropdownMenu messageId={msg.id} onClose={() => setDropdownMessageId(null)} />}
-                </div>
+        {messages.map((msg, index) =>
+          <li key={msg.id} onMouseEnter={() => handleMouseEnter(msg.id)} onMouseLeave={handleMouseLeave}>
+            <div className='message-wrapper'>
+              <div className="message-role">
+                <span className="role">{msg.role}</span>
               </div>
-            </li>
+              <div className="message-content">
+                {editMessageId === msg.id ? (
+                  <div>
+                    <textarea
+                      ref={textAreaRef}
+                      className='edit-box'
+                      type='text'
+                      value={edit}
+                      onChange={e => { handleEditChange(e) }}
+                      onKeyDown={e => {
+                        if (e.key === 'Enter' && !e.shiftKey) {
+                          e.preventDefault();
+                          handleEdit(index, edit)
+                        }
+                      }}
+                    />
+                  </div>
+                ) : (
+                  <div className='message-text' onClick={e => {
+                    handleEditChange
+                    setEdit(msg.content.toLowerCase())
+                    setEditMessageId(msg.id)
+                  }}>
+                    {msg.content.toLowerCase().split('\n').map((item, key) => {
+                      return <span key={key}>{item}<br /></span>
+                    })}
+                  </div>
+                )}
+              </div>
+              <div className="action-wrapper">
+                {hoveredMessageId === msg.id && (
+                  <button className="message-actions" onClick={(e) => {
+                    handleDropdownToggle(msg.id)
+                  }}>
+                    <GoKebabHorizontal />
+                  </button>
+                )}
+                {dropdownMessageId === msg.id && <DropdownMenu message={msg} onClose={() => setDropdownMessageId(null)} />}
+              </div>
+            </div>
+          </li>
         )}
       </ul>
       <div className="input-container">
