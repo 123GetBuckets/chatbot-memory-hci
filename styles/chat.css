@@ -64,6 +64,7 @@
 .message-actions {
   opacity: 0;
   transition: opacity 0.2s ease-in-out;
+  transition: transform 0.2s ease-in-out;
   background: none; /* Removes the default button background */
   border: none; /* Removes the default button border */
   cursor: pointer; /* Changes the cursor to a hand when hovering over the button */
@@ -86,6 +87,7 @@ li:hover .message-actions {
 }
 
 .message-actions:hover {
+  transform: scale(1.1); /* Added hover effect */
   background-color: whitesmoke;
   border-radius: 5px;
   color: grey;
@@ -150,6 +152,7 @@ li:hover .message-actions {
 }
 
 .edit-box {
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2); /* Adds a slight shadow for depth */
   color: gray;
   font-size: 16px;
   background-color: whitesmoke;
@@ -180,25 +183,31 @@ li:hover .message-actions {
 .dropdown-menu {
   position: absolute; /* Positions the dropdown relative to the nearest positioned ancestor */
   display: flex;
-  flex-direction: column; /* Aligns the items vertically */
+  flex-direction: row; /* Aligns the items vertically */
   background-color: #fff; /* Changes the background color to white */
-  padding: 10px; /* Adds a little space around the items */
+  padding: 5px; /* Adds a little space around the items */
   border: 1px solid #ddd; /* Adds a light gray border */
   border-radius: 5px; /* Rounds the corners */
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.15); /* Adds a slight shadow for depth */
   z-index: 1000; /* Ensures the dropdown appears on top of other elements */
-  right: 0; /* Positions the dropdown menu to the right */
+  right: 1; /* Positions the dropdown menu to the right */
+  margin-top: -30px;
+  margin-left: 25px;
 }
 
 .dropdown-menu button {
+  color: grey;
   background: none; /* Removes the default button background */
   border: none; /* Removes the default button border */
   cursor: pointer; /* Changes the cursor to a hand when hovering over the button */
   width: 100%; /* Ensures each button takes up the full width of the dropdown */
   text-align: left; /* Aligns the text to the left */
   padding: 5px; /* Adds some space around the text */
+  transition: transform 0.1s ease-in-out;
 }
 
 .dropdown-menu button:hover {
+  border-radius: 5px; /* Rounds the corners */
+  transform: scale(1.25); /* Added hover effect */
   background-color: #f6f6f6; /* Changes the background color when hovered */
 }

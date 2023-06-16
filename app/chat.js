@@ -1,8 +1,8 @@
 'use client';
 
 import 'styles/chat.css'
-import { GoGrabber, GoKebabHorizontal, GoPerson, GoPlus, GoTriangleRight, GoCopy, GoEye } from "react-icons/go";
-import { DotFillIcon } from '@primer/octicons-react';
+import { GoGrabber, GoKebabHorizontal, GoPerson, GoPlus, GoTriangleRight, GoEye } from "react-icons/go";
+import { TrashIcon, DuplicateIcon, PencilIcon, CopyIcon, EyeIcon, EyeClosedIcon } from '@primer/octicons-react';
 import { useState, useEffect, useRef } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -25,6 +25,7 @@ export default function Chat() {
   const [edit, setEdit] = useState("")
   const [hoveredMessageId, setHoveredMessageId] = useState(null);
   const [dropdownMessageId, setDropdownMessageId] = useState(null);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
 
   const textAreaRef = useRef(null);
 
@@ -35,36 +36,38 @@ export default function Chat() {
   const DropdownMenu = ({ message, onClose }) => {
 
     const deleteMessage = () => {
+      const newMessages = messages.filter( msg => msg.id !== message.id);
+      setMessages(newMessages);
       onClose();
-    }
+    };
 
     const duplicateMessage = () => {
       onClose();
-    }
+    };
 
     const copyText = () => {
       navigator.clipboard.writeText(message.content)
       onClose();
-    }
+    };
 
     const editMessage = () => {
       onClose();
-    }
+    };
 
     const editVisibility = () => {
       onClose();
-    }
+    };
 
     return (
       <div className="dropdown-menu">
-        <button onClick={deleteMessage}>delete</button>
-        <button onClick={duplicateMessage}>duplicate</button>
-        <button onClick={copyText}>copy</button>
-        <button onClick={editMessage}>edit</button>
-        <button onClick={editVisibility}>visibility</button>
+        <button title="Delete" onClick={deleteMessage}><TrashIcon size={16} /></button>
+        <button title="Duplicate" onClick={duplicateMessage}><DuplicateIcon size={16} /></button>
+        <button title="Copy" onClick={copyText}><CopyIcon size={16} /></button>
+        <button title="Edit" onClick={editMessage}><PencilIcon size={16} /></button>
+        <button title="Visibility" onClick={editVisibility}><EyeIcon size={16} /></button>
       </div>
     )
-  }
+  };
 
   const handleMouseEnter = (id) => {
     setHoveredMessageId(id);
@@ -81,22 +84,28 @@ export default function Chat() {
   };
 
   const handleEditChange = (e) => {
-    setEdit(e.target.value)
+    setEdit(e.target.value);
     e.target.style.height = '20px';
     e.target.style.height = `${e.target.scrollHeight - 10}px`;
-  }
+  };
 
   const handleEdit = (id, edit) => {
     const newMessages = [...messages];
     newMessages[id].content = edit;
     setMessages(newMessages);
     setEditMessageId(null);
-    setEdit('')
+    setEdit('');
   };
 
   const handleDropdownToggle = (id) => {
-    setDropdownMessageId(id)
-  }
+    if (dropdownOpen) {
+      setDropdownMessageId(null);
+      setDropdownOpen(false);
+    } else {
+      setDropdownMessageId(id);
+      setDropdownOpen(true);
+    };
+  };
 
   const handleNewChat = () => {
     setMessages([]);
@@ -161,16 +170,16 @@ export default function Chat() {
                       onKeyDown={e => {
                         if (e.key === 'Enter' && !e.shiftKey) {
                           e.preventDefault();
-                          handleEdit(index, edit)
+                          handleEdit(index, edit);
                         }
                       }}
                     />
                   </div>
                 ) : (
                   <div className='message-text' onClick={e => {
-                    handleEditChange
-                    setEdit(msg.content.toLowerCase())
-                    setEditMessageId(msg.id)
+                    handleEditChange(e);
+                    setEdit(msg.content.toLowerCase());
+                    setEditMessageId(msg.id);
                   }}>
                     {msg.content.toLowerCase().split('\n').map((item, key) => {
                       return <span key={key}>{item}<br /></span>
