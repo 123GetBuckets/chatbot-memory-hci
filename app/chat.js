@@ -1,8 +1,8 @@
 'use client';
 
 import 'styles/chat.css';
-import { GoKebabHorizontal, GoPlus, GoTriangleRight } from "react-icons/go";
-import { TrashIcon, DuplicateIcon, PencilIcon, CopyIcon, EyeIcon, EyeClosedIcon, CheckIcon } from '@primer/octicons-react';
+import { GoKebabHorizontal } from "react-icons/go";
+import { KebabHorizontalIcon, TriangleRightIcon, PlusIcon, TrashIcon, DuplicateIcon, PencilIcon, CopyIcon, EyeIcon, EyeClosedIcon, CheckIcon } from '@primer/octicons-react';
 import { useState, useEffect, useRef } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -253,7 +253,7 @@ export default function Chat() {
         )}
       </ul>
       <div className="input-container">
-        <button onClick={handleNewChat} className='input-button'><GoPlus /></button>
+        <button onClick={handleNewChat} className='input-button'><PlusIcon size={24} /></button>
         <textarea
           ref={textAreaRef}
           type="text"
@@ -267,7 +267,7 @@ export default function Chat() {
             }
           }}
         />
-        <button onClick={handleSend} className='input-button'><GoTriangleRight /></button>
+        <button onClick={handleSend} className='input-button'><TriangleRightIcon size={24} /></button>
       </div>
     </div>
   );
