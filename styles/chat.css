@@ -220,13 +220,17 @@ li:hover .message-actions {
 }
 
 .title {
-  color: lightgray;
+  opacity: 10%;
   font-size: 32px; 
   font-weight: bold;
   position: absolute;
   top: 50%;
   left: 50%;
-  transform: translate(-50%, -600%);
+  transform: translate(-50%, -400%);
   text-align: center;
   user-select: none;  /* Added this line */
+}
+
+.message-hidden {
+  opacity: 25%;
 }
