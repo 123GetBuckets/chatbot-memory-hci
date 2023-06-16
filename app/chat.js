@@ -21,6 +21,7 @@ async function runLLM(messages) {
 export default function Chat() {
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([]);
+  const [hiddenMessages, setHiddenMessages] = useState([]);
   const [editMessageId, setEditMessageId] = useState(null);
   const [edit, setEdit] = useState("")
   const [hoveredMessageId, setHoveredMessageId] = useState(null);
@@ -36,8 +37,13 @@ export default function Chat() {
   const DropdownMenu = ({ message, onClose }) => {
 
     const deleteMessage = () => {
+
       const newMessages = messages.filter( msg => msg.id !== message.id);
       setMessages(newMessages);
+
+      setDropdownMessageId(null);
+      setDropdownOpen(false);
+
       onClose();
     };
 
@@ -51,6 +57,8 @@ export default function Chat() {
     };
 
     const editMessage = () => {
+      setEditMessageId(message.id);
+      setEdit(message.content.toLowerCase());
       onClose();
     };
 
@@ -101,6 +109,10 @@ export default function Chat() {
     if (dropdownOpen) {
       setDropdownMessageId(null);
       setDropdownOpen(false);
+      if (dropdownMessageId != id) {
+        setDropdownMessageId(id);
+        setDropdownOpen(true);
+      };
     } else {
       setDropdownMessageId(id);
       setDropdownOpen(true);
@@ -151,6 +163,9 @@ export default function Chat() {
 
   return (
     <div className="chat-container">
+      {messages.length === 0 && 
+        <div className="title">ChatHCI</div>
+      }
       <ul className="message-list">
         {messages.map((msg, index) =>
           <li key={msg.id} onMouseEnter={() => handleMouseEnter(msg.id)} onMouseLeave={handleMouseLeave}>
@@ -177,7 +192,6 @@ export default function Chat() {
                   </div>
                 ) : (
                   <div className='message-text' onClick={e => {
-                    handleEditChange(e);
                     setEdit(msg.content.toLowerCase());
                     setEditMessageId(msg.id);
                   }}>
@@ -188,7 +202,7 @@ export default function Chat() {
                 )}
               </div>
               <div className="action-wrapper">
-                {hoveredMessageId === msg.id && (
+                {((dropdownMessageId === msg.id) || hoveredMessageId === msg.id) && (
                   <button className="message-actions" onClick={(e) => {
                     handleDropdownToggle(msg.id)
                   }}>
