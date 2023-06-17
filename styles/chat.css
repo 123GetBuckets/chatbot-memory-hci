@@ -28,7 +28,7 @@
   display: flex;
   justify-content: center;
   align-items: flex-start;
-  margin-bottom: 10px; /* Provide space between messages */
+  margin-bottom: 15px; /* Provide space between messages */
 }
 
 .message-role {
@@ -64,7 +64,7 @@
 .message-actions {
   opacity: 0;
   transition: opacity 0.2s ease-in-out;
-  transition: transform 0.2s ease-in-out;
+  transition: transform 0.1s ease-in-out;
   background: none; /* Removes the default button background */
   border: none; /* Removes the default button border */
   cursor: pointer; /* Changes the cursor to a hand when hovering over the button */
@@ -83,7 +83,7 @@ li:hover .message-actions {
 }
 
 .message-wrapper:hover {
-  transform: scale(1.02); /* Added hover effect */
+  transform: scale(1.05); /* Added hover effect */
 }
 
 .message-actions:hover {
@@ -94,6 +94,10 @@ li:hover .message-actions {
   padding-right: 3px;
   border-radius: 5px;
   color: grey;
+}
+
+.message-actions:active {
+  transform: scale(0.8);
 }
 
 .message-text:hover {
@@ -222,7 +226,7 @@ li:hover .message-actions {
 
 .dropdown-menu button:hover {
   border-radius: 5px; /* Rounds the corners */
-  transform: scale(1.25); /* Added hover effect */
+  transform: scale(1.2); /* Added hover effect */
   background-color: #f6f6f6; /* Changes the background color when hovered */
 }
 
