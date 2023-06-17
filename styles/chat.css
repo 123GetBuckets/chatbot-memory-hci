@@ -100,12 +100,20 @@ li:hover .message-actions {
   transform: scale(0.8);
 }
 
+.message-text {
+  transition: transform 0.1s ease-in-out;
+}
+
 .message-text:hover {
   background-color: whitesmoke;
   margin: -5px;
   padding: 5px;
   border-radius: 5px;
   color: black;
+}
+
+.message-text:active {
+  transform: scale(0.95);
 }
 
 .input-container button {
@@ -204,9 +212,9 @@ li:hover .message-actions {
   flex-direction: row; /* Aligns the items vertically */
   background-color: #fff; /* Changes the background color to white */
   padding: 5px; /* Adds a little space around the items */
-  /* border: 1px solid #ddd; /* Adds a light gray border */
+  border: 1px solid #ffffff; /* Adds a light gray border */
   border-radius: 5px; /* Rounds the corners */
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Adds a slight shadow for depth */
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.15); /* Adds a slight shadow for depth */
   z-index: 1000; /* Ensures the dropdown appears on top of other elements */
   right: 1; /* Positions the dropdown menu to the right */
   margin-top: -30px;
@@ -230,10 +238,14 @@ li:hover .message-actions {
   background-color: #f6f6f6; /* Changes the background color when hovered */
 }
 
+.dropdown-menu button:active {
+  transform: scale(0.9);
+}
+
 .title {
   opacity: 10%;
   font-size: 32px; 
-  font-weight: bold;
+  font-weight: 700;
   position: absolute;
   top: 50%;
   left: 50%;
