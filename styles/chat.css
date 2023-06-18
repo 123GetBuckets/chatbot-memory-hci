@@ -53,6 +53,7 @@
   text-align: left; /* Aligns text to the right */
   width: 300px;
   margin-right: 10px;
+  word-wrap: break-word;
 }
 
 .action-wrapper {
@@ -165,7 +166,6 @@ li:hover .message-actions {
   padding-top: 5px;
   padding-bottom: 5px;
   resize: none;
-  width: 250px;
   transition: width 0.3s ease-in-out;
   overflow: hidden;
   line-height: 20px;
@@ -192,6 +192,7 @@ li:hover .message-actions {
   line-height: 20px;
   border-radius: 5px;
   overflow: hidden;
+  width: 250px;
 }
 
 .input-box:hover {

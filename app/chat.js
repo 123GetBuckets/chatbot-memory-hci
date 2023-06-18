@@ -38,7 +38,7 @@ export default function Chat() {
 
     const deleteMessage = () => {
 
-      const newMessages = messages.filter( msg => msg.id !== message.id);
+      const newMessages = messages.filter(msg => msg.id !== message.id);
       setMessages(newMessages);
 
       setDropdownMessageId(null);
@@ -87,7 +87,7 @@ export default function Chat() {
         <button title="Delete" onClick={deleteMessage}><TrashIcon size={16} /></button>
         <button title="Duplicate" onClick={duplicateMessage}><DuplicateIcon size={16} /></button>
         <button title="Copy" onClick={copyText}>
-        { copyClicked ? <CheckIcon size={16} /> : <CopyIcon size={16} /> }
+          {copyClicked ? <CheckIcon size={16} /> : <CopyIcon size={16} />}
         </button>
         <button title="Edit" onClick={editMessage}><PencilIcon size={16} /></button>
         <button title={message.visible ? "Hide" : "Show"} onClick={editVisibility}>
@@ -200,7 +200,7 @@ export default function Chat() {
 
   return (
     <div className="chat-container">
-      {messages.length === 0 && 
+      {messages.length === 0 &&
         <div className="title">ChatHCI</div>
       }
       <ul className="message-list">
