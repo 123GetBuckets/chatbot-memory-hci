@@ -3,7 +3,7 @@
   align-items: center;
   flex-direction: column;
   justify-content: center;
-  height: 100vh; /* Adjust this as needed */
+  min-height: 100vh; /* Adjust this as needed */
 }
   
 .input-container {
