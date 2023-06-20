@@ -343,8 +343,8 @@ export default function Chat() {
         </Droppable>
       </DragDropContext>
       <div className="input-container">
-        <button title='add message' onClick={handleNewMessage} className='input-button'><PlusIcon size={24} /></button>
-        <button title='new chat' onClick={handleNewChat} className='input-button'><UndoIcon size={16} /></button>
+        <button title='Add Message' onClick={handleNewMessage} className='input-button'><PlusIcon size={24} /></button>
+        <button title='New Chat' onClick={handleNewChat} className='input-button'><UndoIcon size={16} /></button>
         <textarea
           ref={textAreaRef}
           type="text"
@@ -358,7 +358,7 @@ export default function Chat() {
             }
           }}
         />
-        <button onClick={handleSend} className='input-button'><TriangleRightIcon size={24} /></button>
+        <button title='Send' onClick={handleSend} className='input-button'><TriangleRightIcon size={24} /></button>
       </div>
     </div>
   );
