@@ -41,6 +41,10 @@ export default function Chat() {
     if (editMessageId && editTextAreaRef.current) {
       const textarea = editTextAreaRef.current;
       textarea.focus();
+      
+      // Resize textarea to fit content
+      textarea.style.height = '20px';
+      textarea.style.height = `${textarea.scrollHeight - 10}px`;
     }
   }, [editMessageId, edit]);
 
@@ -301,7 +305,7 @@ export default function Chat() {
                                 ref={editTextAreaRef}
                                 className='edit-box'
                                 type='text'
-                                value={edit}
+                                defaultValue={edit}
                                 onChange={e => { handleEditChange(e) }}
                                 onKeyDown={e => {
                                   if (e.key === 'Enter' && !e.shiftKey) {
@@ -343,8 +347,8 @@ export default function Chat() {
         </Droppable>
       </DragDropContext>
       <div className="input-container">
-        <button title='Add Message' onClick={handleNewMessage} className='input-button'><PlusIcon size={24} /></button>
         <button title='New Chat' onClick={handleNewChat} className='input-button'><UndoIcon size={16} /></button>
+        <button title='Add Message' onClick={handleNewMessage} className='input-button'><PlusIcon size={24} /></button>
         <textarea
           ref={textAreaRef}
           type="text"
