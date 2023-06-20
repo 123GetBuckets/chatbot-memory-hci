@@ -1,3 +1,11 @@
+# abstract
+*how can we reveal a chatbot’s memory state and allow a user to manipulate its memory representation?*
+### interface design
+we have a general sense of the system design and mechanisms, but we need to iterate on the interface design for a minimum viable product.
+### development work
+we use `next.js` for rapid prototyping of a frontend and backend.
+### irb approval
+we need irb approval for our system evaluation. it takes months for processing.
 # quickstart
 ### setup the application
 1. install **[node.js](https://nodejs.org/en)**.
