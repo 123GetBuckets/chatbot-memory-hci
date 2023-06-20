@@ -2,7 +2,7 @@
 
 import 'styles/chat.css';
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
-import { KebabHorizontalIcon, TriangleRightIcon, PlusIcon, TrashIcon, DuplicateIcon, PencilIcon, CopyIcon, EyeIcon, EyeClosedIcon, CheckIcon } from '@primer/octicons-react';
+import { UndoIcon, KebabHorizontalIcon, TriangleRightIcon, PlusIcon, TrashIcon, DuplicateIcon, PencilIcon, CopyIcon, EyeIcon, EyeClosedIcon, CheckIcon } from '@primer/octicons-react';
 import { useState, useEffect, useRef } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -41,8 +41,6 @@ export default function Chat() {
     if (editMessageId && editTextAreaRef.current) {
       const textarea = editTextAreaRef.current;
       textarea.focus();
-      textarea.value = '';  // clear the textarea
-      textarea.value = edit; // set the text which will move the cursor to end
     }
   }, [editMessageId, edit]);
 
@@ -60,6 +58,11 @@ export default function Chat() {
     };
 
     const duplicateMessage = () => {
+
+      let duplicatedMessage = { id: uuidv4(), role: message.role, content: message.content, visible: message.visible };
+
+      setMessages(prevMessages => [...prevMessages, duplicatedMessage]);
+
       onClose();
     };
 
@@ -112,10 +115,12 @@ export default function Chat() {
   const RoleDropdownMenu = ({ message, onClose }) => {
 
     const setAssistantRole = () => {
+      message.role = "assistant";
       onClose();
     };
 
     const setUserRole = () => {
+      message.role = "user";
       onClose();
     };
 
@@ -183,6 +188,19 @@ export default function Chat() {
     };
   };
 
+  const handleNewMessage = () => {
+
+    let emptyMessage;
+
+    if (messages.length === 0 || (messages[messages.length - 1].role === "assistant")) {
+      emptyMessage = { id: uuidv4(), role: "user", content: "", visible: true };
+    } else {
+      emptyMessage = { id: uuidv4(), role: "assistant", content: "", visible: true };
+    };
+
+    setMessages(prevMessages => [...prevMessages, emptyMessage]);
+  }
+
   const handleNewChat = () => {
     setMessages([]);
     setEditMessageId(null);
@@ -207,7 +225,7 @@ export default function Chat() {
 
     const systemMessage = {
       role: "system",
-      content: "You are a conversational assistant. Respond as concisely as possible. Use some emojis.",
+      content: "You are HCI, a conversational assistant. Respond as concisely as possible. Use some emojis.",
     }
 
     const inputMessage = message;
@@ -325,7 +343,8 @@ export default function Chat() {
         </Droppable>
       </DragDropContext>
       <div className="input-container">
-        <button onClick={handleNewChat} className='input-button'><PlusIcon size={24} /></button>
+        <button onClick={handleNewMessage} className='input-button'><PlusIcon size={24} /></button>
+        <button onClick={handleNewChat} className='input-button'><UndoIcon size={16} /></button>
         <textarea
           ref={textAreaRef}
           type="text"
