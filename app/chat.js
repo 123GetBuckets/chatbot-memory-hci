@@ -2,7 +2,6 @@
 
 import 'styles/chat.css';
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
-import { GoKebabHorizontal } from "react-icons/go";
 import { KebabHorizontalIcon, TriangleRightIcon, PlusIcon, TrashIcon, DuplicateIcon, PencilIcon, CopyIcon, EyeIcon, EyeClosedIcon, CheckIcon } from '@primer/octicons-react';
 import { useState, useEffect, useRef } from 'react';
 import { v4 as uuidv4 } from 'uuid';
@@ -28,6 +27,8 @@ export default function Chat() {
   const [dropdownMessageId, setDropdownMessageId] = useState(null);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [copyClicked, setCopyClicked] = useState(false);
+  const [roleDropdownId, setRoleDropdownId] = useState(null);
+  const [roleDropdownOpen, setRoleDropdownOpen] = useState(false);
 
   const textAreaRef = useRef(null);
   const editTextAreaRef = useRef(null);
@@ -108,6 +109,24 @@ export default function Chat() {
     )
   };
 
+  const RoleDropdownMenu = ({ message, onClose }) => {
+
+    const setAssistantRole = () => {
+      onClose();
+    };
+
+    const setUserRole = () => {
+      onClose();
+    };
+
+    return (
+      <div className="role-dropdown-menu">
+        <button title="assistant" onClick={setAssistantRole}>assistant</button>
+        <button title="user" onClick={setUserRole}>user</button>
+      </div>
+    );
+  };
+
   const handleMouseEnter = (id) => {
     setHoveredMessageId(id);
   };
@@ -147,6 +166,20 @@ export default function Chat() {
     } else {
       setDropdownMessageId(id);
       setDropdownOpen(true);
+    };
+  };
+
+  const handleRoleDropdownToggle = (id) => {
+    if (roleDropdownOpen) {
+      setRoleDropdownId(null);
+      setRoleDropdownOpen(false);
+      if (roleDropdownId != id) {
+        setRoleDropdownId(id);
+        setRoleDropdownOpen(true);
+      };
+    } else {
+      setRoleDropdownId(id);
+      setRoleDropdownOpen(true);
     };
   };
 
@@ -235,7 +268,13 @@ export default function Chat() {
                     <li {...provided.draggableProps} {...provided.dragHandleProps} ref={provided.innerRef} onMouseEnter={() => handleMouseEnter(msg.id)} onMouseLeave={handleMouseLeave}>
                       <div className={msg.visible ? 'message-wrapper' : 'message-wrapper message-hidden'}>
                         <div className="message-role">
-                          <span className="role">{msg.role}</span>
+                            <span className="role" onClick={(e) => {
+                              e.stopPropagation();
+                              handleRoleDropdownToggle(msg.id)
+                            }}>
+                              {msg.role}
+                            </span>
+                          {roleDropdownId === msg.id && <RoleDropdownMenu className='role-dropdown-menu' message={msg} onClose={() => setRoleDropdownId(null)} />}
                         </div>
                         <div className="message-content">
                           {editMessageId === msg.id ? (
@@ -270,7 +309,7 @@ export default function Chat() {
                             <button className="message-actions" onClick={(e) => {
                               handleDropdownToggle(msg.id)
                             }}>
-                              <GoKebabHorizontal />
+                              <KebabHorizontalIcon />
                             </button>
                           )}
                           {dropdownMessageId === msg.id && <DropdownMenu className='dropdown-menu' message={msg} onClose={() => setDropdownMessageId(null)} />}
