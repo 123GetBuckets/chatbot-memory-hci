@@ -153,7 +153,13 @@ li:hover .message-actions {
   color: darkgray;
 }
 
+.input-box:hover, .input-box:focus {
+  width: 300px;
+}
+
 .input-box {
+  width: 200px; /* Set an initial width */
+  transition: width 0.3s ease-in-out;
   font-family: 'Inter', sans-serif;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Adds a slight shadow for depth */
   color: gray;
@@ -166,7 +172,6 @@ li:hover .message-actions {
   padding-top: 5px;
   padding-bottom: 5px;
   resize: none;
-  transition: width 0.3s ease-in-out;
   overflow: hidden;
   line-height: 20px;
   border-radius: 8px;
@@ -193,14 +198,6 @@ li:hover .message-actions {
   border-radius: 5px;
   overflow: hidden;
   width: 250px;
-}
-
-.input-box:hover {
-  width: 300px; /* Set larger width when input box is focused */
-}
-
-.input-box:focus {
-  width: 300px; /* Set larger width when input box is focused */
 }
 
 .role-icon {
