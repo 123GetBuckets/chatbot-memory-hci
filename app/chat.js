@@ -1,6 +1,7 @@
 'use client';
 
 import 'styles/chat.css';
+import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import { GoKebabHorizontal } from "react-icons/go";
 import { KebabHorizontalIcon, TriangleRightIcon, PlusIcon, TrashIcon, DuplicateIcon, PencilIcon, CopyIcon, EyeIcon, EyeClosedIcon, CheckIcon } from '@primer/octicons-react';
 import { useState, useEffect, useRef } from 'react';
@@ -29,10 +30,20 @@ export default function Chat() {
   const [copyClicked, setCopyClicked] = useState(false);
 
   const textAreaRef = useRef(null);
+  const editTextAreaRef = useRef(null);
 
   useEffect(() => {
     textAreaRef.current.style.height = '20px'; // Replace with your desired initial height
   }, [])
+
+  useEffect(() => {
+    if (editMessageId && editTextAreaRef.current) {
+      const textarea = editTextAreaRef.current;
+      textarea.focus();
+      textarea.value = '';  // clear the textarea
+      textarea.value = edit; // set the text which will move the cursor to end
+    }
+  }, [editMessageId, edit]);
 
   const DropdownMenu = ({ message, onClose }) => {
 
@@ -148,6 +159,17 @@ export default function Chat() {
     setDropdownOpen(false);
   };
 
+  
+  const handleOnDragEnd = (result) => {
+    if (!result.destination) return;
+
+    const items = Array.from(messages);
+    const [reorderedItem] = items.splice(result.source.index, 1);
+    items.splice(result.destination.index, 0, reorderedItem);
+
+    setMessages(items);
+  };
+
   const handleSend = async () => {
 
     const systemMessage = {
@@ -203,55 +225,66 @@ export default function Chat() {
       {messages.length === 0 &&
         <div className="title">ChatHCI</div>
       }
-      <ul className="message-list">
-        {messages.map((msg, index) =>
-          <li key={msg.id} onMouseEnter={() => handleMouseEnter(msg.id)} onMouseLeave={handleMouseLeave}>
-            <div className={msg.visible ? 'message-wrapper' : 'message-wrapper message-hidden'}>
-              <div className="message-role">
-                <span className="role">{msg.role}</span>
-              </div>
-              <div className="message-content">
-                {editMessageId === msg.id ? (
-                  <div>
-                    <textarea
-                      ref={textAreaRef}
-                      className='edit-box'
-                      type='text'
-                      value={edit}
-                      onChange={e => { handleEditChange(e) }}
-                      onKeyDown={e => {
-                        if (e.key === 'Enter' && !e.shiftKey) {
-                          e.preventDefault();
-                          handleEdit(index, edit);
-                        }
-                      }}
-                    />
-                  </div>
-                ) : (
-                  <div className='message-text' onClick={e => {
-                    setEdit(msg.content.toLowerCase());
-                    setEditMessageId(msg.id);
-                  }}>
-                    {msg.content.toLowerCase().split('\n').map((item, key) => {
-                      return <span key={key}>{item}<br /></span>
-                    })}
-                  </div>
-                )}
-              </div>
-              <div className="action-wrapper">
-                {((dropdownMessageId === msg.id) || hoveredMessageId === msg.id) && (
-                  <button className="message-actions" onClick={(e) => {
-                    handleDropdownToggle(msg.id)
-                  }}>
-                    <GoKebabHorizontal />
-                  </button>
-                )}
-                {dropdownMessageId === msg.id && <DropdownMenu className='dropdown-menu' message={msg} onClose={() => setDropdownMessageId(null)} />}
-              </div>
-            </div>
-          </li>
-        )}
-      </ul>
+      <DragDropContext onDragEnd={handleOnDragEnd}>
+        <Droppable droppableId="messages">
+          {(provided) => (
+            <ul className="message-list" {...provided.droppableProps} ref={provided.innerRef}>
+              {messages.map((msg, index) =>
+                <Draggable key={msg.id} draggableId={msg.id} index={index}>
+                  {(provided) => (
+                    <li {...provided.draggableProps} {...provided.dragHandleProps} ref={provided.innerRef} onMouseEnter={() => handleMouseEnter(msg.id)} onMouseLeave={handleMouseLeave}>
+                      <div className={msg.visible ? 'message-wrapper' : 'message-wrapper message-hidden'}>
+                        <div className="message-role">
+                          <span className="role">{msg.role}</span>
+                        </div>
+                        <div className="message-content">
+                          {editMessageId === msg.id ? (
+                            <div>
+                              <textarea
+                                ref={editTextAreaRef}
+                                className='edit-box'
+                                type='text'
+                                value={edit}
+                                onChange={e => { handleEditChange(e) }}
+                                onKeyDown={e => {
+                                  if (e.key === 'Enter' && !e.shiftKey) {
+                                    e.preventDefault();
+                                    handleEdit(index, edit);
+                                  }
+                                }}
+                              />
+                            </div>
+                          ) : (
+                            <div className='message-text' onClick={e => {
+                              setEdit(msg.content.toLowerCase());
+                              setEditMessageId(msg.id);
+                            }}>
+                              {msg.content.toLowerCase().split('\n').map((item, key) => {
+                                return <span key={key}>{item}<br /></span>
+                              })}
+                            </div>
+                          )}
+                        </div>
+                        <div className="action-wrapper">
+                          {((dropdownMessageId === msg.id) || hoveredMessageId === msg.id) && (
+                            <button className="message-actions" onClick={(e) => {
+                              handleDropdownToggle(msg.id)
+                            }}>
+                              <GoKebabHorizontal />
+                            </button>
+                          )}
+                          {dropdownMessageId === msg.id && <DropdownMenu className='dropdown-menu' message={msg} onClose={() => setDropdownMessageId(null)} />}
+                        </div>
+                      </div>
+                    </li>
+                  )}
+                </Draggable>
+              )}
+              {provided.placeholder}
+            </ul>
+          )}
+        </Droppable>
+      </DragDropContext>
       <div className="input-container">
         <button onClick={handleNewChat} className='input-button'><PlusIcon size={24} /></button>
         <textarea
