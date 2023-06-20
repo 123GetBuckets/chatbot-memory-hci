@@ -126,8 +126,8 @@ export default function Chat() {
 
     return (
       <div className="role-dropdown-menu">
-        <button title="assistant" onClick={setAssistantRole}>assistant</button>
-        <button title="user" onClick={setUserRole}>user</button>
+        <button onClick={setAssistantRole}>assistant</button>
+        <button onClick={setUserRole}>user</button>
       </div>
     );
   };
@@ -343,8 +343,8 @@ export default function Chat() {
         </Droppable>
       </DragDropContext>
       <div className="input-container">
-        <button onClick={handleNewMessage} className='input-button'><PlusIcon size={24} /></button>
-        <button onClick={handleNewChat} className='input-button'><UndoIcon size={16} /></button>
+        <button title='add message' onClick={handleNewMessage} className='input-button'><PlusIcon size={24} /></button>
+        <button title='new chat' onClick={handleNewChat} className='input-button'><UndoIcon size={16} /></button>
         <textarea
           ref={textAreaRef}
           type="text"
