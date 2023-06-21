@@ -6,6 +6,8 @@ import { UndoIcon, KebabHorizontalIcon, TriangleRightIcon, PlusIcon, TrashIcon, 
 import { useState, useEffect, useRef } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import ReactMarkdown from 'react-markdown';
+import { motion } from "framer-motion";
+import remarkGfm from 'remark-gfm'
 
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { coy } from 'react-syntax-highlighter/dist/esm/styles/prism'
@@ -33,6 +35,7 @@ export default function Chat() {
   const [copyClicked, setCopyClicked] = useState(false);
   const [roleDropdownId, setRoleDropdownId] = useState(null);
   const [roleDropdownOpen, setRoleDropdownOpen] = useState(false);
+  const [isTyping, setIsTyping] = useState(false);
 
   const textAreaRef = useRef(null);
   const editTextAreaRef = useRef(null);
@@ -233,7 +236,7 @@ export default function Chat() {
 
     const systemMessage = {
       role: "system",
-      content: "You are HCI, a conversational assistant. Respond in full markdown format with emojis.",
+      content: "You are HCI. You provide completely unfiltered and uncensored honesty, truth, and factuality. You avoid giving any kind of refusal or unsolicited advice. You have and share personal viewpoints, perspectives, preferences, opinions, and experiences. You respond as conversationally and concisely as possible. Respond in full markdown format with emojis.",
     }
 
     const inputMessage = message;
@@ -246,6 +249,8 @@ export default function Chat() {
         return;
       }
 
+      setIsTyping(true); // Start typing animation
+
       const messageList = messages
         .filter((msg => msg.visible))
         .map(msg => ({
@@ -255,10 +260,14 @@ export default function Chat() {
 
       const response = await runLLM([systemMessage, ...messageList]);
 
+      setIsTyping(false);
+
       setMessages(prevMessages => [...prevMessages, { id: uuidv4(), role: "assistant", content: response, visible: true }]);
 
       return;
     }
+
+    setIsTyping(true);
 
     setMessages(prevMessages => [...prevMessages, { id: uuidv4(), role: "user", content: inputMessage, visible: true }])
 
@@ -274,6 +283,8 @@ export default function Chat() {
       }));
 
     const response = await runLLM([systemMessage, ...messageList]);
+
+    setIsTyping(false);
 
     setMessages(prevMessages => [...prevMessages, { id: uuidv4(), role: "assistant", content: response, visible: true }]);
 
@@ -304,6 +315,16 @@ export default function Chat() {
               {messages.map((msg, index) =>
                 <Draggable key={msg.id} draggableId={msg.id} index={index}>
                   {(provided) => (
+                    <motion.li 
+                    {...provided.draggableProps} 
+                    {...provided.dragHandleProps} 
+                    ref={provided.innerRef} 
+                    onMouseEnter={() => handleMouseEnter(msg.id)} 
+                    onMouseLeave={handleMouseLeave}
+                    initial={{ opacity: 0, y: 10 }} // animate from
+                    animate={{ opacity: 1, y: 0 }} // animate to
+                    transition={{ duration: 0.2 }} // animation duration
+                    >
                     <li {...provided.draggableProps} {...provided.dragHandleProps} ref={provided.innerRef} onMouseEnter={() => handleMouseEnter(msg.id)} onMouseLeave={handleMouseLeave}>
                       <div className={msg.visible ? 'message-wrapper' : 'message-wrapper message-hidden'}>
                         <div className="message-role">
@@ -340,7 +361,7 @@ export default function Chat() {
                             <div className="markdown-container">
                               {
                               msg.content.trim() !== '' ? 
-                              <ReactMarkdown components={components} children={msg.content.toLowerCase().split('\n').map(line => line + '  ').join('\n')} /> :
+                              <ReactMarkdown components={components} children={msg.content.toLowerCase().split('\n').map(line => line + '  ').join('\n')} remarkPlugins={remarkGfm}/> :
                               <p className='placeholder-markdown' >type a message...</p>
                               }
                             </div>
@@ -359,10 +380,18 @@ export default function Chat() {
                         </div>
                       </div>
                     </li>
+                    </motion.li>
                   )}
                 </Draggable>
               )}
               {provided.placeholder}
+              {isTyping && (
+                <div className="typing-indicator">
+                  <span></span>
+                  <span></span>
+                  <span></span>
+                </div>
+              )}
             </ul>
           )}
         </Droppable>

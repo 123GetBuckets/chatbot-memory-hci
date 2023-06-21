@@ -39,7 +39,7 @@
   font-size: 16px;
   display: flex;
   align-items: left;
-  transition: transform 0.2s ease-in-out; /* Added transition */
+  transition: transform 0.2s ease-in-out;
 }
 
 .message-content {
@@ -311,10 +311,6 @@ li:hover .message-actions {
   margin-bottom: 5px;
 }
 
-.markdown-container code {
-  margin-left: -10px;
-}
-
 .markdown-container p {
   margin-block-start: 0em;
   margin-block-end: 1em;
@@ -358,4 +354,61 @@ ul, ol {
   background-color: rgb(231, 231, 231); 
   border-radius: 10px;
   border: transparent;
+}
+
+/* TypingIndicator.css */
+
+.typing-indicator {
+  margin: 0;
+  width: 30px;
+  height: 10px;
+  position: relative;
+  display: inline-block;
+  padding-bottom: 10px;
+}
+
+.typing-indicator span {
+  position: absolute;
+  width: 5px;
+  height: 5px;
+  background: rgb(155, 155, 155);
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.typing-indicator span:nth-child(1) {
+  left: 0;
+  animation: typing-indicator 0.5s infinite;
+}
+
+.typing-indicator span:nth-child(2) {
+  left: 10px;
+  animation: typing-indicator 0.5s 0.1s infinite;
+}
+
+.typing-indicator span:nth-child(3) {
+  left: 20px;
+  animation: typing-indicator 0.5s 0.2s infinite;
+}
+
+@keyframes typing-indicator {
+  0% {
+    transform: scaleY(1);
+  }
+
+  20% {
+    transform: scaleY(1);
+  }
+
+  30% {
+    transform: scaleY(0.1);
+  }
+
+  50% {
+    transform: scaleY(1);
+  }
+
+  100% {
+    transform: scaleY(1);
+  }
 }
