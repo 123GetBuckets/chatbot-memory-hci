@@ -83,6 +83,7 @@ li:hover .message-actions {
 
 .role:hover {
   transform: scale(1.1);
+  cursor: pointer;
   padding-left: 5px;
   padding-right: 5px;
   border-radius: 5px;
@@ -92,35 +93,39 @@ li:hover .message-actions {
 }
 
 .role-dropdown-menu {
+  cursor: pointer;
   position: absolute; /* Positions the dropdown relative to the nearest positioned ancestor */
   display: flex;
-  flex-direction: column; /* Aligns the items vertically */
+  flex-direction: row; /* Aligns the items vertically */
   background-color: #fff; /* Changes the background color to white */
-  padding: 5px; /* Adds a little space around the items */
+  padding: 3px; /* Adds a little space around the items */
   border: 1px solid #ffffff; /* Adds a light gray border */
-  border-radius: 5px; /* Rounds the corners */
+  border-radius: 10px; /* Rounds the corners */
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.15); /* Adds a slight shadow for depth */
   z-index: 1000; /* Ensures the dropdown appears on top of other elements */
-  margin-top: -30px;
-  margin-left: 40px;
+  margin-top: 5px;
+  margin-left: 0px;
 }
 
 .role-dropdown-menu button {
   font-weight: 500;
   color: grey;
-  background: none; /* Removes the default button background */
+  border-radius: 15px; /* Rounds the corners */
+  background-color: #f6f6f6; /* Changes the background color when hovered */
   border: none; /* Removes the default button border */
   cursor: pointer; /* Changes the cursor to a hand when hovering over the button */
   width: 100%; /* Ensures each button takes up the full width of the dropdown */
   text-align: left; /* Aligns the text to the left */
-  padding: 3px; /* Adds some space around the text */
+  padding: 5px; /* Adds some space around the text */
+  margin-left: 5px;
+  margin-right: 5px;
+  margin-bottom: 3px;
+  margin-top: 3px;
   transition: transform 0.1s ease-in-out;
 }
 
 .role-dropdown-menu button:hover {
-  border-radius: 5px; /* Rounds the corners */
-  transform: scale(1.1); /* Added hover effect */
-  background-color: #f6f6f6; /* Changes the background color when hovered */
+  transform: scale(1.15); /* Added hover effect */
 }
 
 .role-dropdown-menu button:active {
@@ -153,6 +158,7 @@ li:hover .message-actions {
   background-color: whitesmoke;
   margin-left: -8px;
   padding-left: 8px;
+  padding-bottom: -10px;
   border-radius: 5px;
   color: black;
 }
@@ -297,7 +303,6 @@ li:hover .message-actions {
 .message-hidden {
   opacity: 25%;
 }
-
 
 .markdown-container h1,
 .markdown-container h2,
