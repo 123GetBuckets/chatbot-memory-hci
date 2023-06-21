@@ -5,6 +5,10 @@ import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import { UndoIcon, KebabHorizontalIcon, TriangleRightIcon, PlusIcon, TrashIcon, DuplicateIcon, PencilIcon, CopyIcon, EyeIcon, EyeClosedIcon, CheckIcon } from '@primer/octicons-react';
 import { useState, useEffect, useRef } from 'react';
 import { v4 as uuidv4 } from 'uuid';
+import ReactMarkdown from 'react-markdown';
+
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { coy } from 'react-syntax-highlighter/dist/esm/styles/prism'
 
 const apiKey = process.env.NEXT_PUBLIC_OPENAI_API_KEY;
 
@@ -229,7 +233,7 @@ export default function Chat() {
 
     const systemMessage = {
       role: "system",
-      content: "You are HCI, a conversational assistant. Respond as concisely as possible. Use some emojis.",
+      content: "You are HCI, a conversational assistant. Respond in full markdown format with emojis.",
     }
 
     const inputMessage = message;
@@ -274,6 +278,19 @@ export default function Chat() {
     setMessages(prevMessages => [...prevMessages, { id: uuidv4(), role: "assistant", content: response, visible: true }]);
 
   };
+
+  const components = {
+    code({node, inline, className, children, ...props}) {
+        const match = /language-(\w+)/.exec(className || '')
+        return !inline && match ? (
+          <SyntaxHighlighter wrapLines={true} style={coy} language={match[1]} PreTag="div" children={String(children).replace(/\n$/, '')} {...props} />
+        ) : (
+          <code className={className} {...props}>
+            {children}
+          </code>
+        )
+    }
+  }
 
   return (
     <div className="chat-container">
@@ -320,9 +337,13 @@ export default function Chat() {
                               setEdit(msg.content.toLowerCase());
                               setEditMessageId(msg.id);
                             }}>
-                              {msg.content.toLowerCase().split('\n').map((item, key) => {
-                                return <span key={key}>{item}<br /></span>
-                              })}
+                            <div className="markdown-container">
+                              {
+                              msg.content.trim() !== '' ? 
+                              <ReactMarkdown components={components} children={msg.content.toLowerCase().split('\n').map(line => line + '  ').join('\n')} /> :
+                              <p className='placeholder-markdown' >type a message...</p>
+                              }
+                            </div>
                             </div>
                           )}
                         </div>

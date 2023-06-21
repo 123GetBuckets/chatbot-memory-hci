@@ -18,10 +18,8 @@
 }
 
 .message-list {
-  list-style: none; /* Remove dots */
   padding: 0; /* Remove padding */
   width: fit-content; /* Shrink wrap content */
-  text-align: center;
 }
 
 .message-list li {
@@ -105,7 +103,6 @@ li:hover .message-actions {
   z-index: 1000; /* Ensures the dropdown appears on top of other elements */
   margin-top: -30px;
   margin-left: 40px;
-  
 }
 
 .role-dropdown-menu button {
@@ -137,9 +134,8 @@ li:hover .message-actions {
 .message-actions:hover {
   transform: scale(1.1); /* Added hover effect */
   background-color: whitesmoke;
-  margin-left: 3px;
-  padding-left: 3px;
-  padding-right: 3px;
+  padding-left: 5px;
+  padding-right: 5px;
   border-radius: 5px;
   color: grey;
 }
@@ -155,8 +151,8 @@ li:hover .message-actions {
 
 .message-text:hover {
   background-color: whitesmoke;
-  margin: -5px;
-  padding: 5px;
+  margin-left: -8px;
+  padding-left: 8px;
   border-radius: 5px;
   color: black;
 }
@@ -300,4 +296,66 @@ li:hover .message-actions {
 
 .message-hidden {
   opacity: 25%;
+}
+
+
+.markdown-container h1,
+.markdown-container h2,
+.markdown-container h3,
+.markdown-container h4,
+.markdown-container h5,
+.markdown-container h6,
+.markdown-container pre {
+  margin-top: 0px;
+  padding-top: 0px;
+  margin-bottom: 5px;
+}
+
+.markdown-container code {
+  margin-left: -10px;
+}
+
+.markdown-container p {
+  margin-block-start: 0em;
+  margin-block-end: 1em;
+}
+
+.markdown-container li {
+  justify-content: left;
+}
+
+ul, ol {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.placeholder-markdown {
+  opacity: 20%;
+}
+
+/* Apply to the specific container */
+.markdown-container {
+  overflow: auto;
+}
+
+/* This applies to the entire document */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(231, 231, 231, 0.7) transparent;
+}
+
+/* This is for Chrome, Safari and Opera */
+*::-webkit-scrollbar {
+  width: 12px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent; 
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: rgb(231, 231, 231); 
+  border-radius: 10px;
+  border: transparent;
 }
