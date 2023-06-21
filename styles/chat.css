@@ -343,7 +343,7 @@ ul, ol {
 /* This applies to the entire document */
 * {
   scrollbar-width: thin;
-  scrollbar-color: rgba(231, 231, 231, 0.7) transparent;
+  scrollbar-color: rgba(187, 187, 187, 0.7) transparent;
 }
 
 /* This is for Chrome, Safari and Opera */
@@ -356,9 +356,14 @@ ul, ol {
 }
 
 *::-webkit-scrollbar-thumb {
-  background-color: rgb(231, 231, 231); 
+  background-color: rgb(224, 224, 224); 
   border-radius: 10px;
   border: transparent;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background-color: rgb(201, 201, 201); 
+
 }
 
 /* TypingIndicator.css */
