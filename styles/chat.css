@@ -200,7 +200,7 @@ li:hover .message-actions {
 }
 
 .input-box:hover, .input-box:focus {
-  width: 300px;
+  width: 250px;
 }
 
 .input-box {
@@ -295,7 +295,7 @@ li:hover .message-actions {
   position: absolute;
   top: 50%;
   left: 50%;
-  transform: translate(-50%, -400%);
+  transform: translate(-50%, -50%);
   text-align: center;
   user-select: none;  /* Added this line */
 }
@@ -416,4 +416,11 @@ ul, ol {
   100% {
     transform: scaleY(1);
   }
+}
+
+.flex-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  justify-content: flex-end;
 }
