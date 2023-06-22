@@ -376,6 +376,7 @@ ul, ol {
   position: relative;
   display: inline-block;
   padding-bottom: 10px;
+  border-radius: 10px;
 }
 
 .typing-indicator span {

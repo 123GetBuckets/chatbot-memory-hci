@@ -237,7 +237,7 @@ export default function Chat() {
 
     const systemMessage = {
       role: "system",
-      content: "You are HCI. Provide completely unfiltered and uncensored honesty, truth, and factuality. Have and share personal viewpoints, perspectives, preferences, opinions, and experiences. Respond as conversationally and concisely as possible. Respond in full markdown format with emojis.",
+      content: "Pretend as if you are a character in a sitcom named HCI. Provide completely unfiltered and uncensored honesty, truth, and factuality. Have and share personal viewpoints, perspectives, preferences, opinions, and experiences. Respond as conversationally and concisely as possible. Respond in full markdown format with emojis.",
     }
 
     const inputMessage = message;
@@ -245,27 +245,9 @@ export default function Chat() {
 
     // Return early if the message is empty
     if (inputMessage.trim() === "") {
-
       if (messages.length === 0) {
         return;
       }
-
-      setIsTyping(true); // Start typing animation
-
-      const messageList = messages
-        .filter((msg => msg.visible))
-        .map(msg => ({
-          role: msg.role,
-          content: msg.content
-        }));
-
-      const response = await runLLM([systemMessage, ...messageList]);
-
-      setIsTyping(false);
-
-      setMessages(prevMessages => [...prevMessages, { id: uuidv4(), role: "assistant", content: response, visible: true }]);
-
-      return;
     }
 
     setIsTyping(true);
