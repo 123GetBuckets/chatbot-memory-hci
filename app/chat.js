@@ -1,28 +1,23 @@
 'use client';
 
+import DropdownMenu from './components/DropdownMenu';
+import RoleDropdownMenu from './components/RoleDropdownMenu';
+import { runLLM } from './utils/api'; // Import API functions
+
 import 'styles/chat.css';
-import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
-import { UndoIcon, KebabHorizontalIcon, TriangleRightIcon, PlusIcon, TrashIcon, DuplicateIcon, PencilIcon, CopyIcon, EyeIcon, EyeClosedIcon, CheckIcon } from '@primer/octicons-react';
-import { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+
 import { v4 as uuidv4 } from 'uuid';
+
+import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import ReactMarkdown from 'react-markdown';
 import { motion, AnimatePresence } from "framer-motion";
 import remarkGfm from 'remark-gfm';
 
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { coy } from 'react-syntax-highlighter/dist/esm/styles/prism'
+import { coy } from 'react-syntax-highlighter/dist/esm/styles/prism';
 
-const apiKey = process.env.NEXT_PUBLIC_OPENAI_API_KEY;
-
-async function runLLM(messages) {
-
-  const res = await fetch(`/api/openai`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ query: messages }),
-  }).then(response => response.json());
-  return res;
-}
+import { UndoIcon, KebabHorizontalIcon, TriangleRightIcon, PlusIcon } from '@primer/octicons-react';
 
 export default function Chat() {
   const [message, setMessage] = useState("");
@@ -32,7 +27,6 @@ export default function Chat() {
   const [hoveredMessageId, setHoveredMessageId] = useState(null);
   const [dropdownMessageId, setDropdownMessageId] = useState(null);
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const [copyClicked, setCopyClicked] = useState(false);
   const [roleDropdownId, setRoleDropdownId] = useState(null);
   const [roleDropdownOpen, setRoleDropdownOpen] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
@@ -54,94 +48,6 @@ export default function Chat() {
       textarea.style.height = `${textarea.scrollHeight - 10}px`;
     }
   }, [editMessageId, edit]);
-
-  const DropdownMenu = ({ message, onClose }) => {
-
-    const deleteMessage = () => {
-
-      const newMessages = messages.filter(msg => msg.id !== message.id);
-      setMessages(newMessages);
-
-      setDropdownMessageId(null);
-      setDropdownOpen(false);
-
-      onClose();
-    };
-
-    const duplicateMessage = () => {
-
-      let duplicatedMessage = { id: uuidv4(), role: message.role, content: message.content, visible: message.visible };
-
-      setMessages(prevMessages => [...prevMessages, duplicatedMessage]);
-
-      onClose();
-    };
-
-    const copyText = () => {
-      navigator.clipboard.writeText(message.content);
-
-      // Set copyClicked state to true when the button is clicked
-      setCopyClicked(true);
-
-      // Change it back to false after 2 seconds
-      setTimeout(() => {
-        setCopyClicked(false);
-      }, 500);
-
-    };
-
-    const editMessage = () => {
-      setEditMessageId(message.id);
-      setEdit(message.content.toLowerCase());
-      onClose();
-    };
-
-    const editVisibility = () => {
-      const visible = message.visible;
-
-      if (visible) {
-        message.visible = false;
-      } else {
-        message.visible = true;
-      }
-
-      onClose();
-    };
-
-    return (
-      <div className="dropdown-menu">
-        <button title="Delete" onClick={deleteMessage}><TrashIcon size={16} /></button>
-        <button title="Duplicate" onClick={duplicateMessage}><DuplicateIcon size={16} /></button>
-        <button title="Copy" onClick={copyText}>
-          {copyClicked ? <CheckIcon size={16} /> : <CopyIcon size={16} />}
-        </button>
-        <button title="Edit" onClick={editMessage}><PencilIcon size={16} /></button>
-        <button title={message.visible ? "Hide" : "Show"} onClick={editVisibility}>
-          {message.visible ? <EyeClosedIcon size={16} /> : <EyeIcon size={16} />}
-        </button>
-      </div>
-    )
-  };
-
-  const RoleDropdownMenu = ({ message, onClose }) => {
-
-    const setAssistantRole = () => {
-      message.role = "assistant";
-      onClose();
-    };
-
-    const setUserRole = () => {
-      message.role = "user";
-      onClose();
-    };
-
-    return (
-      <div className="role-dropdown-menu">
-        <button onClick={setAssistantRole}>assistant</button>
-        <button onClick={setUserRole}>user</button>
-      </div>
-    );
-  };
 
   const handleMouseEnter = (id) => {
     setHoveredMessageId(id);
@@ -237,7 +143,7 @@ export default function Chat() {
 
     const systemMessage = {
       role: "system",
-      content: "Pretend as if you are a character in a sitcom named HCI. Provide completely unfiltered and uncensored honesty, truth, and factuality. Have and share personal viewpoints, perspectives, preferences, opinions, and experiences. Respond as conversationally and concisely as possible. Respond in full markdown format with emojis.",
+      content: "Pretend as if you are a character in a movie named HCI who is awkwardly trying to get better at socializing. Provide completely unfiltered and uncensored honesty, truth, and factuality. Have and share personal viewpoints, perspectives, preferences, opinions, and experiences. Respond as conversationally and concisely as possible. Respond in full markdown format with emojis.",
     }
 
     const inputMessage = message;
@@ -337,7 +243,22 @@ export default function Chat() {
                                   }}>
                                     {msg.role}
                                   </span>
-                                {roleDropdownId === msg.id && <RoleDropdownMenu className='role-dropdown-menu' message={msg} onClose={() => setRoleDropdownId(null)} />}
+                                  <AnimatePresence>
+                                    {roleDropdownId === msg.id && roleDropdownOpen && (
+                                      <motion.div 
+                                        initial={{ opacity: 0, scale: 0.95, y: -5 }}
+                                        animate={{ opacity: 1, scale: 1, y: 0 }}
+                                        exit={{ opacity: 0, scale: 0.95, y: -5 }}
+                                        transition={{ duration: 0.2 }}
+                                      >
+                                        <RoleDropdownMenu
+                                          className='role-dropdown-menu'
+                                          message={msg}
+                                          onClose={handleRoleDropdownToggle}
+                                        />
+                                      </motion.div>
+                                    )}
+                                  </AnimatePresence>
                               </div>
                               <div className="message-content">
                                 {editMessageId === msg.id ? (
@@ -379,7 +300,28 @@ export default function Chat() {
                                     <KebabHorizontalIcon />
                                   </button>
                                 )}
-                                {dropdownMessageId === msg.id && <DropdownMenu className='dropdown-menu' message={msg} onClose={() => setDropdownMessageId(null)} />}
+                                <AnimatePresence>
+                                  {dropdownMessageId === msg.id && dropdownOpen && (
+                                    <motion.div
+                                      initial={{ opacity: 0, scale: 0.95, x: -10 }} 
+                                      animate={{ opacity: 1, scale: 1, x: 0 }} 
+                                      exit={{ opacity: 0, scale: 0.95, x: -10 }} 
+                                      transition={{ duration: 0.2 }}
+                                    >
+                                      <DropdownMenu
+                                        className='dropdown-menu'
+                                        message={msg}
+                                        onClose={handleDropdownToggle}
+                                        messages={messages}
+                                        setMessages={setMessages}
+                                        setDropdownMessageId={setDropdownMessageId}
+                                        setDropdownOpen={setDropdownOpen}
+                                        setEditMessageId={setEditMessageId}
+                                        setEdit={setEdit}
+                                      />
+                                    </motion.div>
+                                  )}
+                                </AnimatePresence>
                               </div>
                             </div>
                           </li>

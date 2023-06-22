@@ -4,6 +4,7 @@
   flex-direction: column;
   justify-content: center;
   min-height: 100vh; /* Adjust this as needed */
+  color: rgb(61, 61, 61);
 }
   
 .input-container {
@@ -165,7 +166,7 @@ li:hover .message-actions {
 }
 
 .input-container button {
-  font-family: var(--font-mono);
+  /* font-family: var(--font-mono); */
   transition: transform 0.1s ease-in-out;
   background-color: lightgray;
   border: none; /* Removes the default button border */
