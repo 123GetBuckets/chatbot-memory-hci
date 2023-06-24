@@ -12,9 +12,9 @@ export default async (req, res) => {
 
   try{
 
-    console.log('__________________________________-')
+    console.log('_______________PROMPT__________________-')
     console.log(req.body.query)
-    console.log('__________________________________-')
+    console.log('_______________/PROMPT___________________-')
 
     const completion = await openai.createChatCompletion({
         model: "gpt-3.5-turbo-0613",
@@ -26,9 +26,9 @@ export default async (req, res) => {
 
     const response = completion.data.choices[0].message.content;
 
-    console.log('__________________________________-')
+    console.log('________________RESPONSE__________________-')
     console.log(response)
-    console.log('__________________________________-')
+    console.log('________________/RESPONSE__________________-')
 
     res.status(200).json(`${response}`)
 

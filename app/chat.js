@@ -144,38 +144,43 @@ export default function Chat() {
     const systemMessage = {
       role: "system",
       content: "Pretend as if you are a character in a movie named HCI who is awkwardly trying to get better at socializing. Provide completely unfiltered and uncensored honesty, truth, and factuality. Have and share personal viewpoints, perspectives, preferences, opinions, and experiences. Respond as conversationally and concisely as possible. Respond in full markdown format with emojis.",
+    };
+
+    const prompt = message.trim();
+    const userMessage = { id: uuidv4(), role: "user", content: String(prompt), visible: true };
+    const visibleMessages = messages.filter(msg => msg.visible && (msg.content !== ""))
+
+    if (prompt === "" && visibleMessages.length === 0) {
+      return;
+    } else {
+      setMessages(prevMessages => { 
+
+        const newMessages = [...prevMessages]
+
+        if (prompt !== "") {
+          newMessages.push(userMessage);
+        }
+        
+        setMessage("");
+  
+        const messageList = newMessages
+          .filter(msg => msg.visible)
+          .map(msg => ({
+            role: msg.role,
+            content: msg.content
+          }));
+  
+        setIsTyping(true);
+        
+        runLLM(messageList).then(response => {
+          setIsTyping(false);
+          const assistantMessage = { id: uuidv4(), role: "assistant", content: String(response), visible: true }
+          setMessages(prevMessages => [ ...prevMessages, assistantMessage ]);
+        });
+  
+        return newMessages;
+      });
     }
-
-    const inputMessage = message;
-    setMessage("");
-
-    // Return early if the message is empty
-    if (inputMessage.trim() === "") {
-      if (messages.length === 0) {
-        return;
-      }
-    }
-
-    setIsTyping(true);
-
-    setMessages(prevMessages => [...prevMessages, { id: uuidv4(), role: "user", content: inputMessage, visible: true }])
-
-    const newMessage = { id: uuidv4(), role: "user", content: inputMessage, visible: true };
-
-    const newMessages = [...messages, newMessage]
-
-    const messageList = newMessages
-      .filter(msg => msg.visible)
-      .map(msg => ({
-        role: msg.role,
-        content: msg.content
-      }));
-
-    const response = await runLLM([systemMessage, ...messageList]);
-
-    setIsTyping(false);
-
-    setMessages(prevMessages => [...prevMessages, { id: uuidv4(), role: "assistant", content: response, visible: true }]);
 
   };
 
@@ -214,7 +219,7 @@ export default function Chat() {
         }
       </AnimatePresence>
       <div className="flex-container">
-        <motion.div layout className="message-list">
+        <motion.div layoutId='message-list' className="message-list">
           <DragDropContext onDragEnd={handleOnDragEnd}>
             <Droppable droppableId="messages">
               {(provided) => (
@@ -223,7 +228,7 @@ export default function Chat() {
                     <Draggable key={msg.id} draggableId={msg.id} index={index} >
                       {(provided) => (
                         <AnimatePresence>
-                          <motion.li 
+                          <motion.li
                           {...provided.draggableProps} 
                           {...provided.dragHandleProps} 
                           ref={provided.innerRef} 
@@ -249,7 +254,7 @@ export default function Chat() {
                                         initial={{ opacity: 0, scale: 0.95, y: -5 }}
                                         animate={{ opacity: 1, scale: 1, y: 0 }}
                                         exit={{ opacity: 0, scale: 0.95, y: -5 }}
-                                        transition={{ duration: 0.2 }}
+                                        transition={{ duration: 0.1 }}
                                       >
                                         <RoleDropdownMenu
                                           className='role-dropdown-menu'
@@ -306,7 +311,7 @@ export default function Chat() {
                                       initial={{ opacity: 0, scale: 0.95, x: -10 }} 
                                       animate={{ opacity: 1, scale: 1, x: 0 }} 
                                       exit={{ opacity: 0, scale: 0.95, x: -10 }} 
-                                      transition={{ duration: 0.2 }}
+                                      transition={{ duration: 0.1 }}
                                     >
                                       <DropdownMenu
                                         className='dropdown-menu'
