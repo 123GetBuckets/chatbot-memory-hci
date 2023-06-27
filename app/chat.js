@@ -29,7 +29,7 @@ export default function Chat() {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [roleDropdownId, setRoleDropdownId] = useState(null);
   const [roleDropdownOpen, setRoleDropdownOpen] = useState(false);
-  const [isTyping, setIsTyping] = useState(false);
+  const [isTyping, setIsTyping] = useState(true);
 
   const textAreaRef = useRef(null);
   const editTextAreaRef = useRef(null);
