@@ -135,7 +135,7 @@ li:hover .message-actions {
 }
 
 .message-wrapper:hover {
-  transform: scale(1.05); /* Added hover effect */
+  transform: scale(1.00); /* Added hover effect */
 }
 
 .message-actions:hover {
@@ -152,17 +152,20 @@ li:hover .message-actions {
 }
 
 .message-text {
+  font-family: 'Inter', sans-serif;
   transition: transform 0.1s ease-in-out;
   cursor: text;
 }
 
 .message-text:hover {
   background-color: whitesmoke;
-  margin-left: -8px;
-  padding-left: 8px;
-  padding-bottom: -10px;
-  border-radius: 5px;
-  color: black;
+  margin-left: -1em;
+  padding-left: 1em;
+  padding-bottom: -8em;
+  padding-top: 1em;
+  margin-top: -1em;
+  border-radius: 0.5em;
+  color: gray;
 }
 
 .input-container button {
@@ -229,24 +232,24 @@ li:hover .message-actions {
 .edit-box {
   width: 100%;
   font-family: 'Inter', sans-serif;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Adds a slight shadow for depth */
+  /* box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Adds a slight shadow for depth */
   color: gray;
   font-size: 16px;
   background-color: whitesmoke;
   border: none;
   outline: none;
-  padding-left: 10px;
-  padding-right: 10px;
-  padding-top: 5px;
+  padding-left: 1em;
+  padding-right: -1em;
+  padding-top: 1em;
   padding-bottom: 5px;
-  margin-top: -5px;
+  margin-top: -1em;
   margin-bottom: -5px;
-  margin-left: -10px;
-  margin-right: -10px;
+  margin-left: -1em;
+  margin-right: 1em;
   resize: none;
   line-height: 20px;
   height: 20px;
-  border-radius: 5px;
+  border-radius: 0.5em;
   overflow: hidden;
 }
 
