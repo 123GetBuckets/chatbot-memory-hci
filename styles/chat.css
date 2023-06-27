@@ -135,7 +135,7 @@ li:hover .message-actions {
 }
 
 .message-wrapper:hover {
-  transform: scale(1.00); /* Added hover effect */
+  transform: scale(1.05); /* Added hover effect */
 }
 
 .message-actions:hover {
@@ -374,36 +374,39 @@ ul, ol {
 /* TypingIndicator.css */
 
 .typing-indicator {
-  margin: 0;
   width: 30px;
   height: 10px;
   position: relative;
   display: inline-block;
-  padding-bottom: 10px;
-  border-radius: 10px;
+  margin-bottom: 0.5em;
+  border-radius: 0.5em;
+  background-color: lightgrey;
 }
 
 .typing-indicator span {
   position: absolute;
-  width: 5px;
-  height: 5px;
+  width: 0.2em;
+  height: 0.2em;
   background: rgb(155, 155, 155);
-  border-radius: 50%;
+  border-radius: 100%;
   display: inline-block;
 }
 
 .typing-indicator span:nth-child(1) {
-  left: 0;
+  left: 0.35em;
+  bottom: 0.2em;
   animation: typing-indicator 0.5s infinite;
 }
 
 .typing-indicator span:nth-child(2) {
-  left: 10px;
+  left: 0.85em;
+  bottom: 0.2em;
   animation: typing-indicator 0.5s 0.1s infinite;
 }
 
 .typing-indicator span:nth-child(3) {
-  left: 20px;
+  left: 1.35em;
+  bottom: 0.2em;
   animation: typing-indicator 0.5s 0.2s infinite;
 }
 
