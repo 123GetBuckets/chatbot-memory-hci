@@ -36,15 +36,9 @@ export default function Chat() {
 
   //click out of edit to cancel and restore initial message
   useEffect(() => {
-    const CancelEdit = () => {
-      if (editTextAreaRef.current) {
-        setEditMessageId(null);
-      }
-    }
     document.addEventListener("mousedown", () => {
       setDropdownOpen(false);
       setRoleDropdownOpen(false);
-      CancelEdit();
     })
   });
 

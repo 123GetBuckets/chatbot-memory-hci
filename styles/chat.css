@@ -102,8 +102,8 @@ li:hover .message-actions {
   background-color: #fff; /* Changes the background color to white */
   padding: 3px; /* Adds a little space around the items */
   border: 1px solid #ffffff; /* Adds a light gray border */
-  border-radius: 10px; /* Rounds the corners */
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.15); /* Adds a slight shadow for depth */
+  border-radius: 0.7em; /* Rounds the corners */
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Adds a slight shadow for depth */
   z-index: 1000; /* Ensures the dropdown appears on top of other elements */
   margin-top: 5px;
   margin-left: 0px;
@@ -112,17 +112,17 @@ li:hover .message-actions {
 .role-dropdown-menu button {
   font-weight: 500;
   color: grey;
-  border-radius: 15px; /* Rounds the corners */
+  border-radius: 0.7em; /* Rounds the corners */
   background-color: #f6f6f6; /* Changes the background color when hovered */
   border: none; /* Removes the default button border */
   cursor: pointer; /* Changes the cursor to a hand when hovering over the button */
   width: 100%; /* Ensures each button takes up the full width of the dropdown */
   text-align: left; /* Aligns the text to the left */
-  padding: 5px; /* Adds some space around the text */
-  margin-left: 5px;
-  margin-right: 5px;
-  margin-bottom: 3px;
-  margin-top: 3px;
+  padding: 0.5em; /* Adds some space around the text */
+  margin-left: 0.3em;
+  margin-right: 0.3em;
+  margin-bottom: 0.2em;
+  margin-top: 0.2em;
   transition: transform 0.1s ease-in-out;
 }
 
