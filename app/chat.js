@@ -20,6 +20,7 @@ import { coy } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { UndoIcon, KebabHorizontalIcon, TriangleRightIcon, PlusIcon } from '@primer/octicons-react';
 
 export default function Chat() {
+  const [chats, setChats] = useState([{id: uuidv4(), messages: []}]); // Maintaining list of chats
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([]);
   const [editMessageId, setEditMessageId] = useState(null);
@@ -34,6 +35,7 @@ export default function Chat() {
   const textAreaRef = useRef(null);
   const editTextAreaRef = useRef(null);
 
+  /*
   //click out of edit to cancel and restore initial message
   useEffect(() => {
     document.addEventListener("mousedown", () => {
@@ -41,7 +43,7 @@ export default function Chat() {
       setRoleDropdownOpen(false);
     })
   });
-
+  */
 
   useEffect(() => {
     textAreaRef.current.style.height = '20px'; // Replace with your desired initial height
@@ -57,6 +59,20 @@ export default function Chat() {
       textarea.style.height = `${textarea.scrollHeight - 10}px`;
     }
   }, [editMessageId, edit]);
+
+  // Adding a new chat window
+  const handleNewChatWindow = () => {
+    setChats(prevChats => [...prevChats, {id: uuidv4(), messages: []}]);
+  };
+
+  // Handling chat window drag
+  const handleChatDragEnd = (result) => {
+    if (!result.destination) return;
+    const items = Array.from(chats);
+    const [reorderedItem] = items.splice(result.source.index, 1);
+    items.splice(result.destination.index, 0, reorderedItem);
+    setChats(items);
+  };
 
   const handleMouseEnter = (id) => {
     setHoveredMessageId(id);
@@ -172,12 +188,12 @@ export default function Chat() {
 
         setMessage("");
 
-        const messageList = newMessages
+        const messageList = [systemMessage, ...newMessages
           .filter(msg => msg.visible)
           .map(msg => ({
             role: msg.role,
             content: msg.content
-          }));
+          }))];
 
         setIsTyping(true);
 
