@@ -17,10 +17,11 @@ import remarkGfm from 'remark-gfm';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { coy } from 'react-syntax-highlighter/dist/esm/styles/prism';
 
-import { UndoIcon, KebabHorizontalIcon, TriangleRightIcon, PlusIcon } from '@primer/octicons-react';
+import { UndoIcon, KebabHorizontalIcon, TriangleRightIcon, PlusIcon, BookmarkFillIcon, BookmarkIcon } from '@primer/octicons-react';
+import { withCoalescedInvoke } from 'next/dist/lib/coalesced-function';
 
 export default function Chat() {
-  const [chats, setChats] = useState([{id: uuidv4(), messages: []}]); // Maintaining list of chats
+  const [chats, setChats] = useState([{ id: uuidv4(), messages: [] }]); // Maintaining list of chats
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([]);
   const [editMessageId, setEditMessageId] = useState(null);
@@ -31,7 +32,7 @@ export default function Chat() {
   const [roleDropdownId, setRoleDropdownId] = useState(null);
   const [roleDropdownOpen, setRoleDropdownOpen] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
-
+  const [selected, setSelected] = useState([]);
   const textAreaRef = useRef(null);
   const editTextAreaRef = useRef(null);
 
@@ -62,7 +63,7 @@ export default function Chat() {
 
   // Adding a new chat window
   const handleNewChatWindow = () => {
-    setChats(prevChats => [...prevChats, {id: uuidv4(), messages: []}]);
+    setChats(prevChats => [...prevChats, { id: uuidv4(), messages: [] }]);
   };
 
   // Handling chat window drag
@@ -129,6 +130,17 @@ export default function Chat() {
       setRoleDropdownOpen(true);
     };
   };
+
+  const handleSelect = (message) => {
+    if (!selected.some(e => e.id === message.id)) {
+      selected.push({ id: message.id, content: message.content, role: message.role, visible: message.visible })
+      console.log(selected)
+    }
+    else {
+      const unSelect = selected.filter(select => select.id !== message.id)
+      setSelected(unSelect)
+    }
+  }
 
   const handleNewMessage = () => {
 
@@ -330,6 +342,12 @@ export default function Chat() {
                                       <KebabHorizontalIcon />
                                     </button>
                                   )}
+                                  <button
+                                    onClick={(e) => {
+                                      handleSelect(msg)
+                                    }}>
+                                    {selected.some(e => e.id === msg.id) ? <BookmarkFillIcon size={16} /> : <BookmarkIcon size={16} />}
+                                  </button>
                                   <AnimatePresence>
                                     {dropdownMessageId === msg.id && dropdownOpen && (
                                       <motion.div
