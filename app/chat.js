@@ -342,12 +342,14 @@ export default function Chat() {
                                       <KebabHorizontalIcon />
                                     </button>
                                   )}
-                                  <button
+                                  
+                                  {/* <button
                                     onClick={(e) => {
                                       handleSelect(msg)
                                     }}>
                                     {selected.some(e => e.id === msg.id) ? <BookmarkFillIcon size={16} /> : <BookmarkIcon size={16} />}
-                                  </button>
+                                  </button> */}
+                                  
                                   <AnimatePresence>
                                     {dropdownMessageId === msg.id && dropdownOpen && (
                                       <motion.div
