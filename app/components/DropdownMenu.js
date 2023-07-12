@@ -16,7 +16,13 @@ const DropdownMenu = ({ message, onClose, messages, setMessages, setDropdownMess
 
   const duplicateMessage = () => {
     let duplicatedMessage = { id: uuidv4(), role: message.role, content: message.content, visible: message.visible };
-    setMessages(prevMessages => [...prevMessages, duplicatedMessage]);
+    const index = messages.indexOf(duplicatedMessage);
+    const updateList = [
+      ...messages.slice(0, index + 1),
+      duplicatedMessage,
+      ...messages.slice(index + 1)
+    ]
+    setMessages(updateList);
     onClose();
   };
 
