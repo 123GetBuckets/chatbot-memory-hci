@@ -2,27 +2,37 @@ import { useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { TrashIcon, DuplicateIcon, CheckIcon, CopyIcon, PencilIcon, EyeClosedIcon, EyeIcon } from '@primer/octicons-react';
 
-const DropdownMenu = ({ message, onClose, messages, setMessages, setDropdownMessageId, setDropdownOpen, setEditMessageId, setEdit }) => {
+const DropdownMenu = ({ message, onClose, chats, setChats, setDropdownMessageId, setDropdownOpen, setEditMessageId, setEdit }) => {
 
   const [copyClicked, setCopyClicked] = useState(false);
 
+  const findChat = () => {
+    return chats.find(chat => chat.messages.some(msg => msg.id === message.id));
+  }
+
   const deleteMessage = () => {
-    const newMessages = messages.filter(msg => msg.id !== message.id);
-    setMessages(newMessages);
+    const chatToUpdate = findChat();
+    const newMessages = chatToUpdate.messages.filter(msg => msg.id !== message.id);
+    const updatedChat = { ...chatToUpdate, messages: newMessages };
+    const newChats = chats.map(chat => chat.id === chatToUpdate.id ? updatedChat : chat);
+    setChats(newChats);
     setDropdownMessageId(null);
     setDropdownOpen(false);
     onClose();
   };
 
   const duplicateMessage = () => {
+    const chatToUpdate = findChat();
     let duplicatedMessage = { id: uuidv4(), role: message.role, content: message.content, visible: message.visible };
-    const index = messages.indexOf(message);
+    const index = chatToUpdate.messages.indexOf(message);
     const updateList = [
-      ...messages.slice(0, index + 1),
+      ...chatToUpdate.messages.slice(0, index + 1),
       duplicatedMessage,
-      ...messages.slice(index + 1)
+      ...chatToUpdate.messages.slice(index + 1)
     ]
-    setMessages(updateList);
+    const updatedChat = { ...chatToUpdate, messages: updateList };
+    const newChats = chats.map(chat => chat.id === chatToUpdate.id ? updatedChat : chat);
+    setChats(newChats);
     onClose();
   };
 
@@ -37,18 +47,18 @@ const DropdownMenu = ({ message, onClose, messages, setMessages, setDropdownMess
   };
 
   const editMessage = () => {
+    const chatToUpdate = findChat();
     setEditMessageId(message.id);
-    setEdit(message.content.toLowerCase());
+    setEdit(chatToUpdate.id, message.id, message.content.toLowerCase());
     onClose();
   };
 
   const editVisibility = () => {
-    const visible = message.visible;
-    if (visible) {
-      message.visible = false;
-    } else {
-      message.visible = true;
-    }
+    const chatToUpdate = findChat();
+    const newMessages = chatToUpdate.messages.map(msg => msg.id === message.id ? { ...msg, visible: !msg.visible } : msg);
+    const updatedChat = { ...chatToUpdate, messages: newMessages };
+    const newChats = chats.map(chat => chat.id === chatToUpdate.id ? updatedChat : chat);
+    setChats(newChats);
     onClose();
   };
 
