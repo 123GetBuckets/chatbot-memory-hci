@@ -21,7 +21,6 @@ import { UndoIcon, KebabHorizontalIcon, TriangleRightIcon, PlusIcon, BookmarkFil
 import { withCoalescedInvoke } from 'next/dist/lib/coalesced-function';
 
 export default function Chat() {
-  const [chats, setChats] = useState([{ id: uuidv4(), messages: [] }]); // Maintaining list of chats
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([]);
   const [editMessageId, setEditMessageId] = useState(null);
@@ -60,20 +59,6 @@ export default function Chat() {
       textarea.style.height = `${textarea.scrollHeight - 10}px`;
     }
   }, [editMessageId, edit]);
-
-  // Adding a new chat window
-  const handleNewChatWindow = () => {
-    setChats(prevChats => [...prevChats, { id: uuidv4(), messages: [] }]);
-  };
-
-  // Handling chat window drag
-  const handleChatDragEnd = (result) => {
-    if (!result.destination) return;
-    const items = Array.from(chats);
-    const [reorderedItem] = items.splice(result.source.index, 1);
-    items.splice(result.destination.index, 0, reorderedItem);
-    setChats(items);
-  };
 
   const handleMouseEnter = (id) => {
     setHoveredMessageId(id);
@@ -155,7 +140,7 @@ export default function Chat() {
     setMessages(prevMessages => [...prevMessages, emptyMessage]);
   }
 
-  const handleNewChat = () => {
+  const handleChatReset = () => {
     setMessages([]);
     setEditMessageId(null);
     setEdit("")
@@ -395,7 +380,7 @@ export default function Chat() {
         </motion.div>
         <motion.div layoutId="input-container" layout transition={{ duration: 0.5 }} className="input-container">
           <div className="input-container" style={{ marginTop: 'auto' }}>
-            <button title='New Chat' onClick={handleNewChat} className='input-button'><UndoIcon size={16} /></button>
+            <button title='New Chat' onClick={handleChatReset} className='input-button'><UndoIcon size={16} /></button>
             <button title='Add Message' onClick={handleNewMessage} className='input-button'><PlusIcon size={24} /></button>
             <textarea
               ref={textAreaRef}
