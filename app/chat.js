@@ -17,7 +17,7 @@ import remarkGfm from 'remark-gfm';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { coy } from 'react-syntax-highlighter/dist/esm/styles/prism';
 
-import { UndoIcon, KebabHorizontalIcon, TriangleRightIcon, PlusIcon, CheckboxIcon, SquareIcon } from '@primer/octicons-react';
+import { UndoIcon, KebabHorizontalIcon, TriangleRightIcon, PlusIcon, CheckboxIcon, SquareIcon, StackIcon } from '@primer/octicons-react';
 
 export default function Chat() {
   const [inputId, setInputId] = useState(null);
@@ -31,12 +31,17 @@ export default function Chat() {
   const [roleDropdownId, setRoleDropdownId] = useState(null);
   const [roleDropdownOpen, setRoleDropdownOpen] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
+  const [selected, setSelected] = useState([]);
   const textAreaRef = useRef(null);
   const editTextAreaRef = useRef(null);
 
   useEffect(() => {
     console.log(chats);
   }, [chats]);
+
+  useEffect(() => {
+    console.log(selected);
+  }, [selected]);
 
   useEffect(() => {
     textAreaRef.current.style.height = '20px'; // Replace with your desired initial height
@@ -118,6 +123,17 @@ export default function Chat() {
       setRoleDropdownOpen(true);
     };
   };
+
+  const handleSelect = (message) => {
+    if (!selected.some(e => e.id === message.id)) {
+      selected.push({ id: message.id, content: message.content, role: message.role, visible: message.visible })
+      console.log(selected)
+    }
+    else {
+      const unSelect = selected.filter(select => select.id !== message.id)
+      setSelected(unSelect)
+    }
+  }
 
   const handleNewMessage = (chatId) => {
     let emptyMessage;
@@ -233,7 +249,7 @@ export default function Chat() {
           const messageList = [systemMessage, ...newChat.messages
           .filter(msg => msg.visible)
           .map(msg => ({
-              role: msg.role,
+              role: msg.role === "summary" ? "user" : msg.role,
               content: msg.content
           }))];
 
@@ -251,7 +267,38 @@ export default function Chat() {
       });
     }
   };
-  
+
+  const handleSummarize = async (chatId) => {
+    const summaryMessage = {
+      role: "user",
+      content: "Given the following messages so far, create a summary of our conversation.",
+    };
+
+    const chatIndex = chats.findIndex(chat => chat.id === chatId);
+
+    const messageList = [...selected
+      .filter(msg => msg.visible)
+      .map(msg => ({
+          role: msg.role === "summary" ? "user" : msg.role,
+          content: msg.content
+      })), summaryMessage];
+
+    runLLM(messageList).then(response => { 
+      const summary = { id: uuidv4(), role: "summary", content: String(response), visible: true };
+      const newChats = [...chats];
+
+      // Mark selected messages as not visible
+      newChats[chatIndex].messages = newChats[chatIndex].messages.map(msg =>
+        selected.find(s => s.id === msg.id) ? {...msg, visible: false} : msg
+      );
+
+      newChats[chatIndex].messages.push(summary);
+      setChats(newChats);
+
+      setSelected([]);
+    });
+
+  };
 
   const components = {
     code({ node, inline, className, children, ...props }) {
@@ -376,6 +423,14 @@ export default function Chat() {
                                           <KebabHorizontalIcon />
                                         </button>
                                       )}
+
+                                      <button
+                                        className="message-actions"
+                                        onClick={(e) => {
+                                          handleSelect(msg)
+                                        }}>
+                                        {selected.some(e => e.id === msg.id) ? <CheckboxIcon size={16} /> : <SquareIcon size={24} />}
+                                      </button>
                                       
                                       <AnimatePresence>
                                         {dropdownMessageId === msg.id && dropdownOpen && (
@@ -420,6 +475,16 @@ export default function Chat() {
             </motion.div>
             <motion.div layoutId="input-container" layout transition={{ duration: 0.5 }} className="input-container">
               <div className="input-container" style={{ marginTop: 'auto' }}>
+                <button 
+                  title='Summarize' 
+                  onClick={() => handleSummarize(chat.id)} className='input-button'
+                  style={{
+                    opacity: selected.length > 0 ? 1 : 0.5,
+                    pointerEvents: selected.length > 0 ? "auto" : "none",
+                  }}
+                >
+                    <StackIcon size={16} />
+                </button>
                 <button title='New Chat' onClick={() => handleChatReset(chat.id)} className='input-button'><UndoIcon size={16} /></button>
                 <button title='Add Message' onClick={() => handleNewMessage(chat.id)} className='input-button'><PlusIcon size={24} /></button>
                 <textarea
@@ -444,6 +509,7 @@ export default function Chat() {
       </ul>
       </DragDropContext>
     <button 
+    className='input-button'
     style={{
         position: 'fixed',
         bottom: '20px',
@@ -456,6 +522,7 @@ export default function Chat() {
         <UndoIcon size={24} />
     </button>
     <button 
+    className='input-button'
     style={{
         position: 'fixed',
         bottom: '20px',
