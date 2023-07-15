@@ -438,3 +438,9 @@ ul, ol {
   height: 100%;
   justify-content: flex-end;
 }
+
+.chat-list {
+  display: flex;
+  overflow-x: auto;
+  white-space: nowrap;
+}

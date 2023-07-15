@@ -17,9 +17,10 @@ import remarkGfm from 'remark-gfm';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { coy } from 'react-syntax-highlighter/dist/esm/styles/prism';
 
-import { UndoIcon, KebabHorizontalIcon, TriangleRightIcon, PlusIcon, BookmarkFillIcon, BookmarkIcon } from '@primer/octicons-react';
+import { UndoIcon, KebabHorizontalIcon, TriangleRightIcon, PlusIcon, CheckboxIcon, SquareIcon } from '@primer/octicons-react';
 
 export default function Chat() {
+  const [inputId, setInputId] = useState(null);
   const [message, setMessage] = useState("");
   const [chats, setChats] = useState([{id: uuidv4(), messages: []}]);
   const [editMessageId, setEditMessageId] = useState(null);
@@ -32,6 +33,10 @@ export default function Chat() {
   const [isTyping, setIsTyping] = useState(false);
   const textAreaRef = useRef(null);
   const editTextAreaRef = useRef(null);
+
+  useEffect(() => {
+    console.log(chats);
+  }, [chats]);
 
   useEffect(() => {
     textAreaRef.current.style.height = '20px'; // Replace with your desired initial height
@@ -69,19 +74,22 @@ export default function Chat() {
   };
 
   const handleEdit = (chatId, messageId, edit) => {
-    const chatIndex = chats.findIndex(chat => chat.id === chatId);
-    const messageIndex = chats[chatIndex].messages.findIndex(msg => msg.id === messageId);
-  
     setChats(prevChats => {
-      const newChats = [...prevChats];
-      newChats[chatIndex].messages[messageIndex].content = edit;
-  
-      return newChats;
+        const newChats = [...prevChats];
+        const chatIndex = newChats.findIndex(chat => chat.id === chatId);
+        const messageIndex = newChats[chatIndex].messages.findIndex(msg => msg.id === messageId);
+        
+        const newMessages = [...newChats[chatIndex].messages]; // Create a new copy of the messages array
+        newMessages[messageIndex].content = edit; // Edit the message
+        newChats[chatIndex] = {...newChats[chatIndex], messages: newMessages}; // Create a new chat object for the updated chat
+        
+        return newChats; // Return the new chats array
     });
-  
+    
     setEditMessageId(null);
     setEdit("");
-  };  
+  };
+ 
 
   const handleDropdownToggle = (id) => {
     if (dropdownOpen) {
@@ -149,17 +157,49 @@ export default function Chat() {
     setDropdownOpen(false);
     setIsTyping(false);
   };
-  
+
+  const handleAddChat = () => {
+    const newChat = {id: uuidv4(), messages: []};
+    setChats(prevChats => {
+        const newChats = [...prevChats, newChat];
+        return newChats; // Creates a new array that includes all the old chats and the new one
+    });
+  };
+
+  const handleResetChats = () => { setChats([{id: uuidv4(), messages: []}]); };
 
   const handleOnDragEnd = (result) => {
-    if (!result.destination) return;
+    const { source, destination } = result;
 
-    const items = Array.from(messages);
-    const [reorderedItem] = items.splice(result.source.index, 1);
-    items.splice(result.destination.index, 0, reorderedItem);
+    if (!destination) return;
 
-    setMessages(items);
+    setChats(prevChats => {
+        const newChats = [...prevChats]; // Create a new copy of the chats array
+
+        if (source.droppableId === destination.droppableId) {
+            const chatIndex = newChats.findIndex(chat => chat.id === source.droppableId);
+            const items = Array.from(newChats[chatIndex].messages);
+            const [reorderedItem] = items.splice(source.index, 1);
+            items.splice(destination.index, 0, reorderedItem);
+
+            newChats[chatIndex] = {...newChats[chatIndex], messages: items}; // Create a new chat object for the updated chat
+        } else {
+            const sourceChatIndex = newChats.findIndex(chat => chat.id === source.droppableId);
+            const destinationChatIndex = newChats.findIndex(chat => chat.id === destination.droppableId);
+            const sourceItems = Array.from(newChats[sourceChatIndex].messages);
+            const destinationItems = Array.from(newChats[destinationChatIndex].messages);
+            const [movedItem] = sourceItems.splice(source.index, 1);
+            destinationItems.splice(destination.index, 0, movedItem);
+
+            newChats[sourceChatIndex] = {...newChats[sourceChatIndex], messages: sourceItems}; // Create a new chat object for the source chat
+            newChats[destinationChatIndex] = {...newChats[destinationChatIndex], messages: destinationItems}; // Create a new chat object for the destination chat
+        }
+
+        return newChats; // Return the new chats array
+    });
   };
+
+
 
   const handleSend = async (chatId) => {
     const systemMessage = {
@@ -179,33 +219,35 @@ export default function Chat() {
       return;
     } else {
       setChats(prevChats => {
-        const newChats = [...prevChats];
-        messages = newChats[chatIndex].messages;
-  
-        if (prompt !== "") {
-          messages.push(userMessage);
-        }
-  
-        setMessage("");
-  
-        const messageList = [systemMessage, ...messages
+          // Notice we're now creating a new chat object as well, not just a new array for chats
+          const chatIndex = prevChats.findIndex(chat => chat.id === chatId);
+          const oldChat = prevChats[chatIndex];
+          let newChat = {...oldChat, messages: [...oldChat.messages]}; // copy the chat to a new object
+
+          if (prompt !== "") {
+              newChat.messages.push(userMessage);
+          }
+
+          setMessage("");
+
+          const messageList = [systemMessage, ...newChat.messages
           .filter(msg => msg.visible)
           .map(msg => ({
-            role: msg.role,
-            content: msg.content
+              role: msg.role,
+              content: msg.content
           }))];
-  
-        setIsTyping(true);
-  
-        runLLM(messageList).then(response => {
-          setIsTyping(false);
-          const assistantMessage = { id: uuidv4(), role: "assistant", content: String(response), visible: true };
-          messages.push(assistantMessage);
-        });
-  
-        newChats[chatIndex].messages = messages;
-  
-        return newChats;
+
+          setIsTyping(true);
+
+          runLLM(messageList).then(response => {
+              setIsTyping(false);
+              const assistantMessage = { id: uuidv4(), role: "assistant", content: String(response), visible: true };
+              newChat.messages.push(assistantMessage);
+          });
+
+          const newChats = prevChats.map(chat => chat.id === chatId ? newChat : chat); // replace the old chat with the new one in the array
+
+          return newChats;
       });
     }
   };
@@ -233,7 +275,7 @@ export default function Chat() {
   return (
     <div className="chat-container">
       <AnimatePresence>
-        {chats[0].messages.length === 0 &&
+        {!chats.some(chat => chat.messages.length > 0) &&
           <motion.div
             className="title"
             variants={titleVariants}
@@ -245,12 +287,13 @@ export default function Chat() {
           </motion.div>
         }
       </AnimatePresence>
+      <DragDropContext onDragEnd={handleOnDragEnd}>
       <ul className="chat-list">
         {chats.map((chat, chatIndex) =>
-          <li className="flex-container" key={chatIndex}>
+          <li className="flex-container" key={chat.id}>
             <motion.div layoutId='message-list' className="message-list">
-              <DragDropContext onDragEnd={handleOnDragEnd}>
-                <Droppable droppableId="messages">
+              
+                <Droppable droppableId={String(chatIndex)}>
                   {(provided) => (
                     <ul className="message-list" {...provided.droppableProps} ref={provided.innerRef}>
                       {chat.messages.map((msg, index) =>
@@ -268,7 +311,6 @@ export default function Chat() {
                                 exit={{ opacity: 0, x: -10 }} // animate out
                                 transition={{ duration: 0.5, ease: "easeInOut" }} // animation duration
                               >
-                                <li {...provided.draggableProps} {...provided.dragHandleProps} ref={provided.innerRef} onMouseEnter={() => handleMouseEnter(msg.id)} onMouseLeave={handleMouseLeave}>
                                   <div className={msg.visible ? 'message-wrapper' : 'message-wrapper message-hidden'}>
                                     <div className="message-role">
                                       <span className="role" onClick={(e) => {
@@ -359,7 +401,6 @@ export default function Chat() {
                                       </AnimatePresence>
                                     </div>
                                   </div>
-                                </li>
                               </motion.li>
                             </AnimatePresence>
                           )}
@@ -376,17 +417,17 @@ export default function Chat() {
                     </ul>
                   )}
                 </Droppable>
-              </DragDropContext>
             </motion.div>
             <motion.div layoutId="input-container" layout transition={{ duration: 0.5 }} className="input-container">
               <div className="input-container" style={{ marginTop: 'auto' }}>
                 <button title='New Chat' onClick={() => handleChatReset(chat.id)} className='input-button'><UndoIcon size={16} /></button>
                 <button title='Add Message' onClick={() => handleNewMessage(chat.id)} className='input-button'><PlusIcon size={24} /></button>
                 <textarea
+                  onClick={() => setInputId(chat.id)}
                   ref={textAreaRef}
                   type="text"
                   className='input-box'
-                  value={message}
+                  value={inputId === chat.id ? message : ''}
                   onChange={handleInputChange}
                   onKeyDown={e => {
                     if (e.key === 'Enter' && !e.shiftKey) {
@@ -401,6 +442,31 @@ export default function Chat() {
           </li>
         )}
       </ul>
+      </DragDropContext>
+    <button 
+    style={{
+        position: 'fixed',
+        bottom: '20px',
+        right: '70px',
+        zIndex: 1,
+    }} 
+    onClick={handleResetChats}
+    title="Reset Chats"
+    >
+        <UndoIcon size={24} />
+    </button>
+    <button 
+    style={{
+        position: 'fixed',
+        bottom: '20px',
+        right: '20px',
+        zIndex: 1,
+    }} 
+    onClick={handleAddChat}
+    title="Add Chat"
+    >
+        <PlusIcon size={24} />
+    </button>
     </div>
   );
 }
