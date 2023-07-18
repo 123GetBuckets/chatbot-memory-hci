@@ -54,9 +54,9 @@
 }
 
 .action-wrapper {
-  min-width: 30px; /* Set this to a suitable value for your needs */
+  min-width: 30px;
   min-height: 30px;
-  text-align: right; /* Aligns button to the right */
+  text-align: right;
 }
 
 .message-actions {

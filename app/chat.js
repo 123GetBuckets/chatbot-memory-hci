@@ -415,22 +415,26 @@ export default function Chat() {
                                         </div>
                                       )}
                                     </div>
-                                    <div className="action-wrapper">
+                                    <div className='action-wrapper'>
                                       {((dropdownMessageId === msg.id) || hoveredMessageId === msg.id) && (
-                                        <button className="message-actions" onClick={(e) => {
-                                          handleDropdownToggle(msg.id)
-                                        }}>
-                                          <KebabHorizontalIcon />
+                                        <button
+                                          className="message-actions"
+                                          onClick={(e) => {
+                                            handleSelect(msg)
+                                          }}>
+                                          {selected.some(e => e.id === msg.id) ? <CheckboxIcon size={16} /> : <SquareIcon size={24} />}
                                         </button>
                                       )}
+                                    </div>
+                                    <div className="action-wrapper">
 
-                                      <button
-                                        className="message-actions"
-                                        onClick={(e) => {
-                                          handleSelect(msg)
-                                        }}>
-                                        {selected.some(e => e.id === msg.id) ? <CheckboxIcon size={16} /> : <SquareIcon size={24} />}
-                                      </button>
+                                      {((dropdownMessageId === msg.id) || hoveredMessageId === msg.id) && (
+                                          <button className="message-actions" onClick={(e) => {
+                                            handleDropdownToggle(msg.id)
+                                          }}>
+                                            <KebabHorizontalIcon />
+                                          </button>
+                                      )}
                                       
                                       <AnimatePresence>
                                         {dropdownMessageId === msg.id && dropdownOpen && (
