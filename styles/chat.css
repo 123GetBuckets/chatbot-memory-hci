@@ -33,7 +33,7 @@
 }
 
 .message-role {
-  margin-right: 20px; /* Provide space between role and content */
+  padding-right: 0.5em; /* Provide space between role and content */
   width: 100px; /* Set this to a suitable value for your needs */
   text-align: left; /* Aligns text to the right */
 }
@@ -43,6 +43,11 @@
   display: flex;
   align-items: left;
   transition: transform 0.2s ease-in-out;
+  padding: 1em;
+  padding-top: 2em;
+  padding-left: 2em;
+  border-radius: 1em; /* Rounds the corners */
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
 .message-content {
@@ -59,8 +64,12 @@
   text-align: right;
 }
 
+.select-wrapper {
+  padding-right: 1em;
+}
+
 .message-actions {
-  opacity: 0;
+  opacity: 1;
   transition: opacity 0.2s ease-in-out;
   transition: transform 0.1s ease-in-out;
   background: none; /* Removes the default button background */
@@ -74,10 +83,6 @@
   align-items: center; /* Vertically center the content */
   justify-content: center; /* Horizontally center the content */
   position: relative;
-}
-
-li:hover .message-actions {
-  opacity: 1; /* Show the button on hover */
 }
 
 .role {

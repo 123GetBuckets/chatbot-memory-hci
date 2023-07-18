@@ -7,6 +7,8 @@ import { runLLM } from './utils/api'; // Import API functions
 import 'styles/chat.css';
 import React, { useState, useEffect, useRef } from 'react';
 
+import { Checkbox,Input } from 'antd';
+
 import { v4 as uuidv4 } from 'uuid';
 
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
@@ -340,7 +342,7 @@ export default function Chat() {
           <li className="flex-container" key={chat.id}>
             <motion.div layoutId='message-list' className="message-list">
               
-                <Droppable droppableId={String(chatIndex)}>
+                <Droppable droppableId={String(chat.id)}>
                   {(provided) => (
                     <ul className="message-list" {...provided.droppableProps} ref={provided.innerRef}>
                       {chat.messages.map((msg, index) =>
@@ -359,6 +361,11 @@ export default function Chat() {
                                 transition={{ duration: 0.5, ease: "easeInOut" }} // animation duration
                               >
                                   <div className={msg.visible ? 'message-wrapper' : 'message-wrapper message-hidden'}>
+                                    <div className='select-wrapper'>
+                                        <Checkbox onChange = {(e)=>
+                                          handleSelect(e.target.checked,msg)
+                                          }></Checkbox>
+                                    </div>
                                     <div className="message-role">
                                       <span className="role" onClick={(e) => {
                                         e.stopPropagation();
@@ -415,26 +422,13 @@ export default function Chat() {
                                         </div>
                                       )}
                                     </div>
-                                    <div className='action-wrapper'>
-                                      {((dropdownMessageId === msg.id) || hoveredMessageId === msg.id) && (
-                                        <button
-                                          className="message-actions"
-                                          onClick={(e) => {
-                                            handleSelect(msg)
-                                          }}>
-                                          {selected.some(e => e.id === msg.id) ? <CheckboxIcon size={16} /> : <SquareIcon size={24} />}
-                                        </button>
-                                      )}
-                                    </div>
                                     <div className="action-wrapper">
 
-                                      {((dropdownMessageId === msg.id) || hoveredMessageId === msg.id) && (
-                                          <button className="message-actions" onClick={(e) => {
-                                            handleDropdownToggle(msg.id)
-                                          }}>
-                                            <KebabHorizontalIcon />
-                                          </button>
-                                      )}
+                                      <button className="message-actions" onClick={(e) => {
+                                        handleDropdownToggle(msg.id)
+                                      }}>
+                                        <KebabHorizontalIcon />
+                                      </button>
                                       
                                       <AnimatePresence>
                                         {dropdownMessageId === msg.id && dropdownOpen && (
